@@ -1,0 +1,49 @@
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 4px solid #000000 !important;
+}
+
+.nav-link.active {
+    color: #ffffff !important;
+    font-weight: bold !important;
+    background-color: #c30f4e !important;
+}
+
+.nav-link {
+    color: #000000 !important;
+}
+
+.nav-link:hover {
+    background-color: #c30f4e99 !important;
+    color: #ffffff !important;
+}
+
+.bg-light {
+    background-color: #084787 !important;
+}
+
+body {
+    background-color: #ffffff;
+}
+
+.btn-primary {
+    background-color: #b80000 !important;
+    border-color: #b80000 !important;
+}
+
+.btn-primary:hover {
+    background-color: #a30a32 !important;
+    border-color: #a30a32 !important;
+}
+
+.bg-light {
+    background-color: #8c2c626e !important;
+}
+
+.price-card {
+    border: 2px solid #c5c5c5 !important;
+    background-color: #b8000087 !important;
+    border-radius: 20px !important;
+    width: 500px !important;
+    height: 200px !important;
+}
