@@ -14,8 +14,6 @@ Route::get('/about', function () {
     return view('about');
 });
 
-Route::get('/pricelist', [PriceController::class, 'index']);
-
 Route::get('/team', function () {
     return view('team');
 });
