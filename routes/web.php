@@ -18,6 +18,8 @@ Route::get('/team', function () {
     return view('team');
 });
 
+Route::get('/pricelist', [PriceController::class, 'index'])->name('pricelist');
+
 Route::get('/clientlogin', [loginController::class, 'showLoginForm'])->name('clientlogin');
 
 Route::get('/adminlogin', [AdminLoginController::class, 'showLoginForm'])->name('adminlogin');
