@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <link href="{{ asset('style.css') }}" rel="stylesheet"> 
+        <link href="{{ asset('style.css') }}" rel="stylesheet">
       </head>
          <body>
             <nav class="navbar navbar-expand-lg border-bottom border-dark">
@@ -35,8 +35,8 @@
                 </ul>
 
                 <!-- Right: Button -->
-                <a href="{{ route('clientlogin') }}">
-                  <button class="btn btn-primary m-3 fw-bold">Log In</button>
+                <a href="{{ route('logout') }}">
+                  <button class="btn btn-primary m-3 fw-bold">Log Out</button>
                 </a>
               </div>
             </nav>

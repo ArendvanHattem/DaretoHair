@@ -1,13 +1,3 @@
-## Trello link:
-https://trello.com/invite/b/6968cd71591bd33708f2513a/ATTI8124904a596d4524852f66e4d59e6bed4C5E8659/project-5
-
-
-
-
-
-
-
-
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
