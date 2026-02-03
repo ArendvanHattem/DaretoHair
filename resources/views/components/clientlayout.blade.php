@@ -35,8 +35,8 @@
                 </ul>
 
                 <!-- Right: Button -->
-                <a href="{{ route('clientlogin') }}">
-                  <button class="btn btn-primary m-3 fw-bold">Log In</button>
+                <a href="{{ route('logout') }}">
+                  <button class="btn btn-primary m-3 fw-bold">Log Out</button>
                 </a>
               </div>
             </nav>
