@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PriceController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\auth\loginController;
 use App\Http\Controllers\auth\AdminLoginController;
 use App\Http\Controllers\auth\ClientSignupController;
@@ -17,6 +18,8 @@ Route::get('/about', function () {
 Route::get('/team', function () {
     return view('team');
 });
+
+Route::get('/team', [TeamController::class, 'index']);
 
 Route::get('/pricelist', [PriceController::class, 'index'])->name('pricelist');
 
