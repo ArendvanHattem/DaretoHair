@@ -1,6 +1,6 @@
 <x-layout>
        <x-slot name="header">
-        <h1 class="display-4 fw-bold">Ons Team</h1>
-        <p class="lead">Maak kennis met de gepassioneerde professionals achter Dare To Hair.</p>
+        <h1 class="display-4 fw-bold">Over Dare To Hair</h1>
+        <p class="lead">De geschiedenis achter Dare To Hair</p>
     </x-slot>
 </x-layout>

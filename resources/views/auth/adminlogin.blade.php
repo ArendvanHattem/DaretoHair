@@ -1,7 +1,7 @@
 <x-loginlayout>
   <x-slot name="header">
     <h1 class="display-4 fw-bold">Welkom Terug</h1>
-    <p class="lead">Log in in je account of maak een nieuwe</p>
+    <p class="lead">Log in of maak een nieuw account aan</p>
   </x-slot>
 
   <div class="container">
@@ -37,7 +37,8 @@
         <h1 class="fw-bold display-6 mb-2">Admin inloggen</h1>
         <p class="fs-5 mb-4">Log in om je afspraken te beheren en nieuwe te boeken</p>
 
-        <form method="GET" action="{{ route('adminlogin') }}">
+        <form method="POST" action="{{ route('adminlogin') }}"> 
+          @csrf
           <div class="mb-4">
             <label class="form-label fw-bold fs-4 mb-2">Email</label>
             <div class="input-group thick-input">
@@ -47,7 +48,7 @@
                   <path d="m4 6 8 6 8-6"></path>
                 </svg>
               </span>
-              <input type="email" class="form-control" placeholder="your@email.com">
+              <input type="email" name="email" class="form-control" placeholder="your@email.com" value="{{old('email')}}" required>
             </div>
           </div>
 

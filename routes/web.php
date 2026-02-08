@@ -25,3 +25,9 @@ Route::get('/clientlogin', [loginController::class, 'showLoginForm'])->name('cli
 Route::get('/adminlogin', [AdminLoginController::class, 'showLoginForm'])->name('adminlogin');
 
 Route::get('/clientsignup', [ClientSignupController::class, 'showSignupForm'])->name('clientsignup');
+
+Route::post('/clientlogin', [loginController::class, 'login'])->name('clientlogin');
+
+Route::post('/adminlogin', [AdminLoginController::class, 'login'])->name('adminlogin');
+
+Route::post('/clientsignup', [ClientSignupController::class, 'signup'])->name('clientsignup');
