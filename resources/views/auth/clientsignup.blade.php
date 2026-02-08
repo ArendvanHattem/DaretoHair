@@ -1,7 +1,7 @@
 <x-loginlayout>
   <x-slot name="header">
     <h1 class="display-4 fw-bold">Welkom Terug</h1>
-    <p class="lead">Log in in je account of maak een nieuwe</p>
+    <p class="lead">Log in of maak een nieuw account aan</p>
   </x-slot>
 
   <div class="container">
@@ -49,7 +49,7 @@
             <path d="m4 6 8 6 8-6"></path>
           </svg>
         </span>
-        <input type="email" name="email" class="form-control" placeholder="your@email.com">
+        <input type="email" name="email" class="form-control" placeholder="your@email.com" value="{{old('email')}}" required>
       </div>
     </div>
 
@@ -65,7 +65,7 @@
             <path d="M4 21a8 8 0 0 1 16 0"></path>
           </svg>
         </span>
-        <input type="text" name="name" class="form-control" placeholder="Je volledige naam">
+        <input type="text" name="name" class="form-control" placeholder="Je volledige naam" value="{{old('name')}}" required>
       </div>
     </div>
 
@@ -79,7 +79,7 @@
             <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
           </svg>
         </span>
-        <input type="text" name="phone" class="form-control" placeholder="06-123456789">
+        <input type="text" name="phone" class="form-control" placeholder="06-123456789" value="{{old('phone')}}" required>
       </div>
     </div>
 
@@ -131,9 +131,23 @@
 
       Registreren als Klant
     </button>
+
+    <!-- Error messages -->
+    @if ($errors->any())
+      <div class="alert alert-danger mt-4">
+        <ul class="mb-0">
+          @foreach ($errors->all() as $error)
+            <li style="list-style: none;">{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>  
+    @endif
+
+    
+
   </form>
 </div>
 
-    </div>
   </div>
+</div>
 </x-loginlayout>
