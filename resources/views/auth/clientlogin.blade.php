@@ -1,7 +1,7 @@
 <x-loginlayout>
   <x-slot name="header">
     <h1 class="display-4 fw-bold">Welkom Terug</h1>
-    <p class="lead">Log in in je account of maak een nieuwe</p>
+    <p class="lead">Log in of maak een nieuw account aan</p>
   </x-slot>
 
   <div class="container">
@@ -36,9 +36,15 @@
       <div class="auth-panel">
         <h1 class="fw-bold display-6 mb-2">Klant inloggen</h1>
         <p class="fs-5 mb-4">Log in om je afspraken te beheren en nieuwe te boeken</p>
+  
+        @if (session('success'))
+          <div class="alert alert-success text-center fw-bold">
+                {{ session('success') }}
+          </div>
+        @endif
 
-        {{-- For now: redirect to client page --}}
-        <form method="GET" action="{{ route('clientlogin') }}">
+        <form method="POST" action="{{ route('clientlogin') }}">
+          @csrf
           <div class="mb-4">
             <label class="form-label fw-bold fs-4 mb-2">Email</label>
             <div class="input-group thick-input">
@@ -48,7 +54,7 @@
                   <path d="m4 6 8 6 8-6"></path>
                 </svg>
               </span>
-              <input type="email" class="form-control" placeholder="your@email.com">
+              <input type="email" name="email" class="form-control" placeholder="your@email.com" value="{{old('email')}}" required>
             </div>
           </div>
 
@@ -61,7 +67,7 @@
                   <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                 </svg>
               </span>
-              <input type="password" class="form-control" placeholder="Enter your password">
+              <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
             </div>
           </div>
 
