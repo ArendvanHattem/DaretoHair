@@ -1,3 +1,19 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content-wrapper {
+    flex: 1 0 auto;
+    height: 100vh;
+}
+
 .navbar {
     background-color: #ffffff !important;
     border-bottom: 4px solid #000000 !important;
@@ -119,3 +135,66 @@ body {
 .auth-wrap {
     max-width: 760px;
 }
+
+
+
+/* ==============================
+---------------------------------
+================================*/
+
+/* FOOTER COMPONENT */
+
+.footer-wrapper {
+    flex-shrink: 0;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background-color: #8c2c626e;
+    width: 100%;
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+    align-items: start;
+}
+
+.footer-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #000;
+}
+
+.footer-text {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin: 0;
+}
+
+.footer-map iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    border: 0;
+}
+
+.footer-visit-content {
+
+}
+
+.footer-box {
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.footer-contact-icon-box {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+
