@@ -6,6 +6,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\auth\loginController;
 use App\Http\Controllers\auth\AdminLoginController;
 use App\Http\Controllers\auth\ClientSignupController;
+use App\Http\Controllers\AppointmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,6 +19,8 @@ Route::get('/about', function () {
 Route::get('/team', function () {
     return view('team');
 });
+
+Route::get('/agenda', [AppointmentController::class, 'index'])->name('agenda');
 
 Route::get('/team', [TeamController::class, 'index']);
 

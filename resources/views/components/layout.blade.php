@@ -32,6 +32,9 @@
                   <li class="nav-item">
                     <x-nav-link href="/team" :active="request()->is('team')">Het Team</x-nav-link>
                   </li>
+                  <li class="nav-item">
+                    <x-nav-link href="/agenda" :active="request()->is('agenda')">Agenda</x-nav-link>        
+                  </li>
                 </ul>
 
                 <!-- Right: Button -->
