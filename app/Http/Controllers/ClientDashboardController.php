@@ -22,6 +22,10 @@ class ClientDashboardController extends Controller
         // Merge + shuffle so they’re mixed
         $services = $knippen->merge($kleuren)->shuffle();
 
+        if (!auth()->check()) {
+            return redirect()->route('clientsignup');
+        }
+
         return view('auth.clientdashboard', compact('services'));
     }
 }

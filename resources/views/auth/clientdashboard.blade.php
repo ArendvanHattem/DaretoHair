@@ -1,6 +1,6 @@
 <x-layout>
      <x-slot name="header">
-        <h1 class="display-4 fw-bold">Welkom, {{ Auth::user()->name }}</h1>
+        <h1 class="display-4 fw-bold">Welkom, </h1>
         <p class="lead">Proffesionele zorg voor jouw haar, met passie en vakmanschap.</p>
         <a href="/clientmakeappointment" class="btn btn-primary fw-bold">Maak nieuwe afspraak</a>
         <a href="/pricelist" class="btn btn-primary fw-bold">Bekijk Prijzen</a>
