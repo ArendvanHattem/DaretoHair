@@ -10,10 +10,6 @@ body {
     min-height: 100vh;
 }
 
-.main-content-wrapper {
-    flex: 1 0 auto;
-    height: 100vh;
-}
 
 .navbar {
     background-color: #ffffff !important;
@@ -207,4 +203,54 @@ body {
     justify-content: center;
     align-content: center;
     align-items: center;
+}
+
+/* ==============================
+---------------------------------
+================================*/
+
+/* ABOUT PAGE */
+
+.about-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    justify-self: center;
+    width: 80%;
+}
+
+.about-hero {
+    align-items: center;
+    text-align: center;
+}
+
+.h2-title {
+    font-size: calc(1.375rem + 1.5vw) !important;
+    font-weight: 700 !important;
+    color: #000;
+}
+
+.about-content {
+    justify-self: center;
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+.about-content-left, .about-content-right {
+    width: 50%;
+    align-content: center;
+}
+
+.about-content-right {
+    display: flex;
+    justify-content: end;
+    max-height: 400px;
+}
+
+.content-image {
+    width: 100%;
+    object-fit: cover;
+    object-position: 0px -250px;
+    border-radius: 
 }
