@@ -21,5 +21,9 @@
   @endforeach
 </div>
 
-<p class="text-center mt-3">Zie de prijslijst voor alle behandelingen.</p>
+<div class="text-center mt-3">
+  <a href="/pricelist" class="btn btn-auth">
+    Zie de prijslijst voor alle behandelingen
+  </a>
+</div>
 </x-layout>
