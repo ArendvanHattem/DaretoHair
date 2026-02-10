@@ -1,4 +1,4 @@
-<x-loginlayout>
+<x-layout>
   <x-slot name="header">
     <h1 class="display-4 fw-bold">Welkom Terug</h1>
     <p class="lead">Log in of maak een nieuw account aan</p>
@@ -77,4 +77,4 @@
 
     </div>
   </div>
-</x-loginlayout>
+</x-layout>

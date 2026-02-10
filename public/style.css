@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
 }
@@ -50,6 +51,18 @@ body {
 .btn-primary:hover {
     background-color: #a30a32 !important;
     border-color: #a30a32 !important;
+}
+
+.btn-auth {
+    background-color: transparent !important;
+    border-color: #a30a32 !important;
+    color: #000000 !important;
+}
+
+.btn-auth:hover {
+    background-color: #a30a32 !important;
+    border-color: #a30a32 !important;
+    color: #ffffff !important;
 }
 
 .bg-light {
@@ -151,6 +164,7 @@ body {
     background-color: #8c2c626e;
     width: 100%;
 }
+
 .footer-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -178,9 +192,7 @@ body {
     border: 0;
 }
 
-.footer-visit-content {
-
-}
+.footer-visit-content {}
 
 .footer-box {
     padding: 1.5rem;
@@ -196,5 +208,3 @@ body {
     align-content: center;
     align-items: center;
 }
-
-
