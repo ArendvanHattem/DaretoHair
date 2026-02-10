@@ -1,4 +1,4 @@
-<x-loginlayout>
+<x-layout>
   <x-slot name="header">
     <h1 class="display-4 fw-bold">Welkom Terug</h1>
     <p class="lead">Log in of maak een nieuw account aan</p>
@@ -78,9 +78,20 @@
             </svg>
             Inloggen als Klant
           </button>
+
+          @if ($errors->any())
+      <div class="alert alert-danger mt-4">
+        <ul class="mb-0">
+          @foreach ($errors->all() as $error)
+            <li style="list-style: none;">{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>  
+    @endif
+    
         </form>
       </div>
 
     </div>
   </div>
-</x-loginlayout>
+</x-layout>
