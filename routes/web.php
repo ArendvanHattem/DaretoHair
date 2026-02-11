@@ -7,6 +7,10 @@ use App\Http\Controllers\auth\loginController;
 use App\Http\Controllers\auth\AdminLoginController;
 use App\Http\Controllers\auth\ClientSignupController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\auth\logoutController;
+use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\ClientAgendaController;
+use App\Http\Controllers\ClientMakeAppointmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,3 +41,11 @@ Route::post('/clientlogin', [loginController::class, 'login'])->name('clientlogi
 Route::post('/adminlogin', [AdminLoginController::class, 'login'])->name('adminlogin');
 
 Route::post('/clientsignup', [ClientSignupController::class, 'signup'])->name('clientsignup');
+
+Route::post('/clientlogout', [logoutController::class, 'logout'])->name('clientlogout');
+
+Route::get('/clientdashboard', [ClientDashboardController::class, 'index'])->name('clientdashboard');
+
+Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
+
+Route::get('/clientmakeappointment', [ClientMakeAppointmentController::class, 'index'])->name('clientmakeappointment');

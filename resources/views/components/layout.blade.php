@@ -1,62 +1,118 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <link href="{{ asset('style.css') }}" rel="stylesheet"> 
-      </head>
-         <body>
-            <nav class="navbar navbar-expand-lg border-bottom border-dark">
-              <div class="container-fluid d-flex align-items-center">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-                <!-- Left: Logo -->
-                <a class="navbar-brand me-3" href="/">
-                  <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
-                </a>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
-                <!-- Center: Nav links -->
-                <ul class="navbar-nav nav-pills mx-auto d-flex align-items-center">
-                  <li class="nav-item">
-                    <x-nav-link href="/pricelist" :active="request()->is('pricelist')">Prijslijst</x-nav-link>
-                  </li>
-                  <li class="nav-item">
-                    <x-nav-link href="/about" :active="request()->is('about')">Over Ons</x-nav-link>
-                  </li>
-                  <li class="nav-item">
-                    <x-nav-link href="/team" :active="request()->is('team')">Het Team</x-nav-link>
-                  </li>
-                  <li class="nav-item">
-                    <x-nav-link href="/agenda" :active="request()->is('agenda')">Agenda</x-nav-link>        
-                  </li>
-                </ul>
+  <link href="{{ asset('style.css') }}" rel="stylesheet">
+</head>
 
-                <!-- Right: Button -->
-                <a href="{{ route('clientlogin') }}">
-                  <button class="btn btn-primary m-3 fw-bold">Log In</button>
-                </a>
-              </div>
-            </nav>
+<body>
 
-              <header class="text-black py-5 mb-4 bg-light">
-                <div class="container text-center">
-                    {{ $header }}
-                </div>
-            </header>
+<nav class="navbar navbar-expand-lg border-bottom border-dark">
+  <div class="container-fluid d-flex align-items-center">
 
-            <main class="container mb-5">
-                {{ $slot }}
-            </main>
+    @auth
+    <a class="navbar-brand me-3" href="/clientdashboard">
+      <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
+    </a>
+    @else
+    <a class="navbar-brand me-3" href="/">
+      <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
+    </a>
+    @endauth
 
+    <!-- Center: Nav links -->
+    <ul class="navbar-nav nav-pills mx-auto d-flex align-items-center gap-2">
 
+      <li class="nav-item">
+        <x-nav-link href="{{ route('pricelist') }}" :active="request()->routeIs('pricelist')">
+          Prijslijst
+        </x-nav-link>
+      </li>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    </body>
+      <li class="nav-item">
+        <x-nav-link href="/about" :active="request()->is('about')">
+          Over Ons
+        </x-nav-link>
+      </li>
+
+      @auth
+        <li class="nav-item ms-3">
+          <a href="/clientmakeappointment" class="btn btn-primary fw-bold">
+            Maak afspraak
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="/clientagenda" class="btn btn-primary fw-bold">
+            Agenda
+          </a>
+        </li>
+      @endauth
+
+      <li class="nav-item">
+        <x-nav-link href="/team" :active="request()->is('team')">
+          Het Team
+        </x-nav-link>
+      </li>
+
+    </ul>
+
+    <!-- Right: Auth area -->
+    @auth
+      <div class="d-flex align-items-center gap-3">
+
+        <!-- User icon + name -->
+        <div class="d-flex align-items-center gap-2 fw-bold">
+          <svg width="34" height="34" viewBox="0 0 24 24"
+               fill="none" stroke="black" stroke-width="1.8">
+            <path d="M20 21a8 8 0 0 0-16 0"></path>
+            <circle cx="12" cy="8" r="4"></circle>
+          </svg>
+
+          <span>{{ Auth::user()->name }}</span>
+        </div>
+
+        <!-- Logout -->
+        <form action="{{ route('clientlogout') }}" method="POST" class="m-0">
+          @csrf
+          <button type="submit" class="btn btn-primary fw-bold">
+            Log Out
+          </button>
+        </form>
+
+      </div>
+    @else
+      <a href="{{ route('clientlogin') }}" class="btn btn-primary fw-bold">
+        Log In
+      </a>
+    @endauth
+
+  </div>
+</nav>
+
+<header class="text-black py-5 mb-4 bg-light">
+  <div class="container text-center">
+    {{ $header }}
+  </div>
+</header>
+
+<main class="container mb-5">
+  {{ $slot }}
+</main>
+
+  <x-footer />
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
-
