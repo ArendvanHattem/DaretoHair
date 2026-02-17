@@ -188,8 +188,6 @@ body {
     border: 0;
 }
 
-.footer-visit-content {}
-
 .footer-box {
     padding: 1.5rem;
     border-radius: 8px;
@@ -214,7 +212,7 @@ body {
 .about-page-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 100px;
     justify-self: center;
     width: 80%;
 }
@@ -252,5 +250,5 @@ body {
     width: 100%;
     object-fit: cover;
     object-position: 0px -250px;
-    border-radius: 
+    border-radius: 20px;
 }
