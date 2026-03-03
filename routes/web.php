@@ -10,10 +10,9 @@ use App\Http\Controllers\auth\logoutController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientAgendaController;
 use App\Http\Controllers\ClientMakeAppointmentController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/about', function () {
     return view('about');
