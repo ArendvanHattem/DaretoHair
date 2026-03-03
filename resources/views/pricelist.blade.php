@@ -8,6 +8,7 @@
         <h2 class="mb-4 text-center fw-bold fs-1">Knippen & Stylen</h2>
         <br>
         <div class="row justify-content-center">
+    <!-- Displaying the prices -->
     @foreach($knippen_stylen as $price)
         <div class="col-12 col-md-4 mb-3 d-flex">
             <div class="card price-card text-center">

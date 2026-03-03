@@ -6,6 +6,7 @@
     <br>
     <h1 class="display-5 fw-bold text-center mb-5">Onze Behandelingen</h1>
     <div class="row justify-content-center">
+    <!-- Displaying the services -->
   @foreach ($services as $service)
     <div class="col-12 col-md-6 col-lg-3 mb-3 d-flex">
       <div class="card price-card text-center w-100">
