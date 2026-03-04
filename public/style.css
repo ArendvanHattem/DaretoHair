@@ -252,3 +252,99 @@ body {
     object-position: 0px -250px;
     border-radius: 20px;
 }
+
+
+/* ------------------------
+         Medewerkers
+------------------------ */
+.medewerkers-table-wrapper {
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 70%;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+    flex-direction: column;
+}
+
+.medewerkers-table-wrapper h2 {
+    font-weight: 700;
+    padding: 20px;
+}
+
+.medewerkers-table {
+    width: 100%;
+}
+
+.medewerkers-table td {
+    border-top: 2px solid black;
+    padding: 10px;
+}
+
+.medewerkers-table-buttons {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    gap: 10px;
+}
+
+.medewerkers-table-button {
+    border: 0;
+    background-color: transparent;
+}
+
+
+.edit-werknemer-wrapper {
+    display: flex;
+    width: 50%;
+    justify-self: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #E09499;
+    padding-left: 20px;
+    padding-right: 40px;
+    padding-bottom: 40px;
+    padding-top: 10px;
+    border-radius: 10px;
+    border: 2px solid #c8c8c8;
+}
+
+.edit-werknemer-wrapper h2 {
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.edit-werknemer-wrapper .form-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.edit-werknemer-wrapper form {
+    width:70%;
+    text-align: center;
+}
+
+.edit-werknemer-wrapper .form-row {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+
+.edit-werknemer-wrapper .form-row label {
+    font-size: 1rem !important;
+}
+
+.edit-werknemer-wrapper .form-row input, .edit-werknemer-wrapper button {
+    border: 3px solid black;
+}
+
+.edit-werknemer-wrapper button {
+    background-color: #40132A;
+    color: white;
+    width: 70%;
+    vertical-align: middle;
+    padding: 5px 0;
+    border-radius: 5px;
+    margin-top: 20px;
+}

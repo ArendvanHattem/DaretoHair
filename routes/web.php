@@ -10,6 +10,7 @@ use App\Http\Controllers\auth\logoutController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientAgendaController;
 use App\Http\Controllers\ClientMakeAppointmentController;
+use App\Http\Controllers\EditEmployee;
 use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index']);
@@ -45,3 +46,24 @@ Route::get('/clientdashboard', [ClientDashboardController::class, 'index'])->nam
 Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
 
 Route::get('/clientmakeappointment', [ClientMakeAppointmentController::class, 'index'])->name('clientmakeappointment');
+
+// ROUTES FOR EMPLOYEES
+
+// INDEX
+Route::get('/employees', [EditEmployee::class, 'index'])->name('show_employee');
+
+// EDIT
+Route::get('/employees/{employee}/edit', [EditEmployee::class, 'edit'])->name('edit_employee');
+
+// UPDATE
+Route::patch('/employees/{employee}', [EditEmployee::class, 'update'])->name('update_employee');
+
+// DELETE
+Route::delete('/employees/{employee}/delete', [EditEmployee::class, 'delete'])->name('delete_employee');
+
+// CREATE
+Route::get('/employees/create', function () {
+    return view('admin.create_employee');
+});
+
+Route::post('/employees/create', [EditEmployee::class, 'create'])->name('create_employee');
