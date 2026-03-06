@@ -39,16 +39,17 @@ class EditEmployee extends Controller
 
     $employee = User::findOrFail($id);
 
-      $validated = $request->validate(
-        [
-            'name' => 'string',
-            'specialiteit' => 'string',
-            'email' => '|email|unique:users,email,' . $employee->id,
-        ],
-        [
-            'email.unique' => 'Er bestaat al een account met dit e-mailadres.',
-        ]
-    );
+    $validated = $request->validate([
+                'email' => 'required|email|',
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20|',
+                'password' => 'nullable|string|min:8|confirmed',
+                'specialiteit' => 'string',
+            ]);
+
+    if (empty($validated['password'])) {
+        unset($validated['password']);
+    }
 
     $employee->update($validated);
     
@@ -70,22 +71,25 @@ class EditEmployee extends Controller
     }
 
     public function create(Request $request) {
-
+        
         if (!auth()->check()) {
-                return redirect()->route('clientsignup');
-            }
+            return redirect()->route('clientsignup');
+        }
 
-            $validated = $request->validate(
-        [
-            'name' => 'required|string',
-            'specialiteit' => 'required|string',
-            'email' => '|email|unique:users,email,',
-             'phone' => ['required', 'string', 'unique:users,phone', 'regex:/^\+?[0-9]{6,15}$/'], 
+        $validated = $request->validate([
+            'email' => 'required|email|unique:users',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20|unique:users,phone',
+            'password' => 'required|string|min:8|confirmed',
+            'specialiteit' => 'string',
         ],
         [
             'email.unique' => 'Er bestaat al een account met dit e-mailadres.',
             'phone.unique' => 'Er bestaat al een account met dit telefoonnummer.',
         ]);
+
+        $validated['role'] = \App\Models\User::ROLE_EMPLOYEE;
+
 
     User::create($validated);
 
