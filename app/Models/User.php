@@ -11,7 +11,6 @@ class User extends Authenticatable
 {
     public const ROLE_CUSTOMER = 'klant';
     public const ROLE_EMPLOYEE = 'medewerker';
-    public const ROLE_ADMIN = 'admin';
 
     public static function roles(): array
     {
