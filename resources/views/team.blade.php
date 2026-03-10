@@ -15,8 +15,8 @@
 
                     <!-- Content -->
                     <div class="flex-1 p-4 text-center flex flex-col justify-center" style="height: 150px;">
-                        <h2 class="card-title fs-4">{{$lid->naam}}</h2>
-                        <p class="card-text text-gray-500">{{$lid->speciality}}</p>
+                        <h2 class="card-title fs-4">{{$lid->name}}</h2>
+                        <p class="card-text text-gray-500">{{$lid->specialiteit}}</p>
                     </div>
                 </div>
             </div>
