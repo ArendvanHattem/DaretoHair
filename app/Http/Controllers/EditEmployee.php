@@ -79,7 +79,7 @@ class EditEmployee extends Controller
         $validated = $request->validate([
             'email' => 'required|email|unique:users',
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:users,phone',
+            'phone' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
             'specialiteit' => 'string',
         ],
