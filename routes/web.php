@@ -10,6 +10,7 @@ use App\Http\Controllers\auth\LogoutController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientAgendaController;
 use App\Http\Controllers\ClientMakeAppointmentController;
+use App\Http\Controllers\EditEmployee;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\auth\PasswordResetController;
 use App\Http\Controllers\auth\PasswordResetFormController;
@@ -56,3 +57,23 @@ Route::post('/passwordreset', [PasswordResetController::class, 'handle'])->name(
 Route::get('/reset-password', [PasswordResetFormController::class, 'index'])->name('passwordresetform');
 
 Route::post('/reset-password', [PasswordResetFormController::class, 'handle'])->name('passwordresetform');
+// ROUTES FOR EMPLOYEES
+
+// INDEX
+Route::get('/employees', [EditEmployee::class, 'index'])->name('show_employee');
+
+// EDIT
+Route::get('/employees/{employee}/edit', [EditEmployee::class, 'edit'])->name('edit_employee');
+
+// UPDATE
+Route::patch('/employees/{employee}', [EditEmployee::class, 'update'])->name('update_employee');
+
+// DELETE
+Route::delete('/employees/{employee}/delete', [EditEmployee::class, 'delete'])->name('delete_employee');
+
+// CREATE
+Route::get('/employees/create', function () {
+    return view('admin.create_employee');
+});
+
+Route::post('/employees/create', [EditEmployee::class, 'create'])->name('create_employee');

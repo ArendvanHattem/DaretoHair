@@ -11,6 +11,18 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements CanResetPassword
 {
+    public const ROLE_CUSTOMER = 'klant';
+    public const ROLE_EMPLOYEE = 'medewerker';
+
+    public static function roles(): array
+    {
+        return [
+            self::ROLE_CUSTOMER => 'Klant',
+            self::ROLE_EMPLOYEE => 'Medewerker',
+        ];
+    }
+
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -24,6 +36,9 @@ class User extends Authenticatable implements CanResetPassword
         'email',
         'phone',
         'password',
+        'role',
+        'specialiteit',
+        'photo',
     ];
 
     /**
