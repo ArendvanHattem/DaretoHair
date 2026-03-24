@@ -12,7 +12,7 @@
                 <a href="/employees/create" class="create-employee-button">+</a>
             </div>
 
-            @forelse($employees as $employee)
+            
         <table class="medewerkers-table">
         <thead>
             <tr>
@@ -24,6 +24,7 @@
         </thead>
         <tbody>
             
+                @forelse($employees as $employee)
                 <tr>
                     <td class="px-4 py-2">{{ $employee->name }}</td>
                     <td class="px-4 py-2">{{ $employee->specialiteit }}</td>

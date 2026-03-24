@@ -10,6 +10,7 @@ use App\Http\Controllers\auth\logoutController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientAgendaController;
 use App\Http\Controllers\ClientMakeAppointmentController;
+use App\Http\Controllers\EditCustomer;
 use App\Http\Controllers\EditEmployee;
 use App\Http\Controllers\HomeController;
 
@@ -63,7 +64,28 @@ Route::delete('/employees/{employee}/delete', [EditEmployee::class, 'delete'])->
 
 // CREATE
 Route::get('/employees/create', function () {
-    return view('admin.create_employee');
+    return view('admin.employees.create_employee');
 });
 
 Route::post('/employees/create', [EditEmployee::class, 'create'])->name('create_employee');
+
+
+
+// ROUTES FOR CUSTOMERS
+Route::get('/customers', [EditCustomer::class, 'index'])->name('show_customers');
+
+// EDIT
+Route::get('/customers/{klant}/edit', [EditCustomer::class, 'edit'])->name('edit_customer');
+
+// UPDATE
+Route::patch('/customers/{klant}', [EditCustomer::class, 'update'])->name('update_customer');
+
+// DELETE
+Route::delete('/customers/{klant}/delete', [EditCustomer::class, 'delete'])->name('delete_customer');
+
+// CREATE
+Route::get('/customers/create', function () {
+    return view('admin.customers.create_klant');
+});
+
+Route::post('/customers/create', [EditCustomer::class, 'create'])->name('create_customer');

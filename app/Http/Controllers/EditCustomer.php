@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use  App\Models\User;
 
-class EditEmployee extends Controller
+class EditCustomer extends Controller
 {
     public function index() {
 
@@ -14,9 +14,9 @@ class EditEmployee extends Controller
             return redirect()->route('clientsignup');
         }
 
-        $employees = User::where('role', 'medewerker')->get();
+        $klanten = User::where('role', 'klant')->get();
 
-        return view('admin.employees.employees', compact('employees'));
+        return view('admin.customers.klanten', compact('klanten'));
         
     }
 
@@ -26,9 +26,9 @@ class EditEmployee extends Controller
             return redirect()->route('clientsignup');
         }
 
-        $employee = User::findOrFail($id);
+        $klant = User::findOrFail($id);
         
-        return view('admin.employees.edit_employees', compact('employee'));
+        return view('admin.customers.edit_klant', compact('klant'));
     }
 
     public function update(Request $request, $id) {
@@ -43,18 +43,12 @@ class EditEmployee extends Controller
                 'email' => 'required|email|',
                 'name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20|',
-                'password' => 'nullable|string|min:8|confirmed',
-                'specialiteit' => 'string',
             ]);
-
-    if (empty($validated['password'])) {
-        unset($validated['password']);
-    }
 
     $employee->update($validated);
     
  
-        return redirect('employees');
+        return redirect('customers');
     }
 
     public function delete($id) {
@@ -63,10 +57,10 @@ class EditEmployee extends Controller
                 return redirect()->route('clientsignup');
             }
 
-        $employee = User::findOrFail($id);
-        $employee->delete();
+        $klant = User::findOrFail($id);
+        $klant->delete();
 
-        return redirect('employees');
+        return redirect('customers');
         
     }
 
@@ -79,21 +73,19 @@ class EditEmployee extends Controller
         $validated = $request->validate([
             'email' => 'required|email|unique:users',
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|max:20|unique:users,phone',
             'password' => 'required|string|min:8|confirmed',
-            'specialiteit' => 'string',
         ],
         [
             'email.unique' => 'Er bestaat al een account met dit e-mailadres.',
-            'phone.unique' => 'Er bestaat al een account met dit telefoonnummer.',
         ]);
 
-        $validated['role'] = \App\Models\User::ROLE_EMPLOYEE;
+        $validated['role'] = \App\Models\User::ROLE_CUSTOMER;
 
 
     User::create($validated);
 
-        return redirect('employees');
+        return redirect('customers');
         
     }
 }
