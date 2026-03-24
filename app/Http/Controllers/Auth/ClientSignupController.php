@@ -27,6 +27,8 @@ class ClientSignupController extends Controller
 
         ]);
 
+        $validated['role'] = \App\Models\User::ROLE_CUSTOMER;
+
         $user = User::create($validated);
 
         Auth::login($user);
