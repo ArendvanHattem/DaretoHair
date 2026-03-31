@@ -3,15 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\TeamController;
-use App\Http\Controllers\auth\loginController;
+use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\AdminLoginController;
 use App\Http\Controllers\auth\ClientSignupController;
-use App\Http\Controllers\auth\logoutController;
+use App\Http\Controllers\auth\LogoutController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientAgendaController;
 use App\Http\Controllers\ClientMakeAppointmentController;
 use App\Http\Controllers\EditEmployee;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\auth\PasswordResetController;
+use App\Http\Controllers\auth\PasswordResetFormController;
+
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -47,6 +50,13 @@ Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('cli
 
 Route::get('/clientmakeappointment', [ClientMakeAppointmentController::class, 'index'])->name('clientmakeappointment');
 
+Route::get('/passwordreset', [PasswordResetController::class, 'index'])->name('passwordreset');
+
+Route::post('/passwordreset', [PasswordResetController::class, 'handle'])->name('passwordreset');
+
+Route::get('/reset-password', [PasswordResetFormController::class, 'index'])->name('passwordresetform');
+
+Route::post('/reset-password', [PasswordResetFormController::class, 'handle'])->name('passwordresetform');
 // ROUTES FOR EMPLOYEES
 
 // INDEX

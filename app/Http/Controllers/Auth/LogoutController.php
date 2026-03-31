@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class logoutController extends Controller
+class LogoutController extends Controller
 {
    public function logout(Request $request)
     {
