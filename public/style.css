@@ -140,18 +140,9 @@ body {
     color: #fff;
 }
 
-/* Optional: center layout width similar to screenshot */
 .auth-wrap {
     max-width: 760px;
 }
-
-
-
-/* ==============================
----------------------------------
-================================*/
-
-/* FOOTER COMPONENT */
 
 .footer-wrapper {
     flex-shrink: 0;
@@ -203,12 +194,6 @@ body {
     align-items: center;
 }
 
-/* ==============================
----------------------------------
-================================*/
-
-/* ABOUT PAGE */
-
 .about-page-wrapper {
     display: flex;
     flex-direction: column;
@@ -235,7 +220,8 @@ body {
     gap: 25px;
 }
 
-.about-content-left, .about-content-right {
+.about-content-left,
+.about-content-right {
     width: 50%;
     align-content: center;
 }
@@ -253,6 +239,9 @@ body {
     border-radius: 20px;
 }
 
+a.text-decoration-none {
+    text-decoration: none !important;
+    color: #8d0000ca !important;
 
 /* ------------------------
          Medewerkers

@@ -72,6 +72,10 @@
             Inloggen als Klant
           </button>
 
+          <a href="{{ route('passwordreset') }}" class="d-block text-center mt-3 text-decoration-none fw-bold">
+            Wachtwoord vergeten?
+          </a>
+
           @if ($errors->any())
       <div class="alert alert-danger mt-4">
         <ul class="mb-0">
