@@ -17,6 +17,6 @@ class PriceController extends Controller
         $knippen_stylen = pricelist::where('category', 'knippen & stylen')->get();
         $kleuren = pricelist::where('category', 'kleuren')->get();
 
-        return view('pricelist', compact('knippen_stylen', 'kleuren'));
+        return view('prijzen', compact('knippen_stylen', 'kleuren'));
     }
 }

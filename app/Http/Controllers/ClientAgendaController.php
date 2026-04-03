@@ -10,7 +10,7 @@ class ClientAgendaController extends Controller
         {
 
         if (!auth()->check()) {
-            return redirect()->route('clientsignup');
+            return redirect()->route('register');
         }
         
             return view('clientagenda');
