@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+use Spatie\Permission\Traits\HasRoles;
+
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
@@ -11,20 +13,22 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements CanResetPassword
 {
-    public const ROLE_CUSTOMER = 'klant';
-    public const ROLE_EMPLOYEE = 'medewerker';
+    // public const ROLE_CUSTOMER = 'klant';
+    // public const ROLE_EMPLOYEE = 'medewerker';
 
-    public static function roles(): array
-    {
-        return [
-            self::ROLE_CUSTOMER => 'Klant',
-            self::ROLE_EMPLOYEE => 'Medewerker',
-        ];
-    }
+    // public static function roles(): array
+    // {
+    //     return [
+    //         self::ROLE_CUSTOMER => 'Klant',
+    //         self::ROLE_EMPLOYEE => 'Medewerker',
+    //     ];
+    // }
 
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -62,5 +66,22 @@ class User extends Authenticatable implements CanResetPassword
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * De "booted" methode van de model.
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Controleer of de rol 'klant' bestaat, anders wordt deze aangemaakt
+            // (Dit voorkomt errors als je vergeet te seeden)
+            if (!\Spatie\Permission\Models\Role::where('name', 'klant')->exists()) {
+                \Spatie\Permission\Models\Role::create(['name' => 'klant']);
+            }
+
+            // Wijs de rol 'klant' toe aan de nieuwe gebruiker
+            $user->assignRole('klant');
+        });
     }
 }

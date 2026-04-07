@@ -22,15 +22,17 @@
 <nav class="navbar navbar-expand-lg border-bottom border-dark">
   <div class="container-fluid d-flex align-items-center">
 
-    @auth
-    <a class="navbar-brand me-3" href="/dashboard">
-      <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
-    </a>
+    @hasrole('medewerker')
+        {{-- Ingelogd als medewerker: naar dashboard --}}
+        <a class="navbar-brand me-3" href="/dashboard">
+          <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
+        </a>
     @else
-    <a class="navbar-brand me-3" href="/">
-      <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
-    </a>
-    @endauth
+        {{-- Gast of Klant: naar de homepage --}}
+        <a class="navbar-brand me-3" href="/">
+          <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
+        </a>
+    @endhasrole
 
     <!-- Center: Nav links -->
     <ul class="navbar-nav nav-pills mx-auto d-flex align-items-center gap-2">

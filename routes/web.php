@@ -40,16 +40,14 @@ Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
 
 // --- ADMIN (MEDEWERKERS) ---
-// Prefix 'portal' of 'account' zorgt voor scheiding van de publieke site
+// Prefix 'admin' voor het scheiden van de content voor de klanten
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('medewerkers', EmployeeController::class);
-    Route::resource('klanten', CustomerController::class);
+    Route::resource('medewerkers', EmployeeController::class)->middleware('can:manage employees');;
+    Route::resource('klanten', CustomerController::class)->middleware('can:manage customers');
 });
 
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'role:medewerker']);
 
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
+Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda')->middleware(['auth', 'role:klant']);
 
 Route::get('/clientmakeappointment', [ClientMakeAppointmentController::class, 'index'])->name('clientmakeappointment');
