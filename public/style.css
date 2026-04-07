@@ -42,6 +42,8 @@ body {
 .btn-primary {
     background-color: #b80000 !important;
     border-color: #b80000 !important;
+    display: flex;
+    align-items: center;
 }
 
 .btn-primary:hover {
