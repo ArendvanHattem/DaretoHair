@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Spatie\Permission\Models\Role;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use  App\Models\User;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 class CustomerController extends Controller
 {
     public function index() {
-        $klanten = User::where('role', 'klant')->get();
+        $klanten = User::role('klant')->get();
         return view('admin.klanten.klanten', compact('klanten'));
     }
 
@@ -28,7 +30,6 @@ class CustomerController extends Controller
             'email.unique' => 'Er bestaat al een account met dit e-mailadres.',
         ]);
 
-        $validated['role'] = 'klant';
         $validated['password'] = Hash::make($request->password);
 
         User::create($validated);
