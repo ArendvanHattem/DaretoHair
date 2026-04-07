@@ -16,3 +16,4 @@ class ClientMakeAppointmentController extends Controller
             return view('clientmakeappointment');
         }
 }
+ø

@@ -13,7 +13,7 @@ class PasswordResetController extends Controller
 {
     public function index()
     {
-        return view('auth.passwordreset');
+        return view('passwordreset');
     }
 
 
@@ -24,7 +24,7 @@ public function handle(Request $request)
         'email' => 'required|email|exists:users,email',
     ], 
     [
-        'email.exists' => 'Er bestaat geen account met dit emailadres. <br> <a href="' . route('clientsignup') . '" class="text-decoration-none fw-bold" style="color: #8d0000ca;">Wil je een account aanmaken?</a>',
+        'email.exists' => 'Er bestaat geen account met dit emailadres. <br> <a href="' . route('login') . '" class="text-decoration-none fw-bold" style="color: #8d0000ca;">Wil je een account aanmaken?</a>',
     ]);
 
     $token = Str::random(60);

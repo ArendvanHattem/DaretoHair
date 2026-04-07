@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
      public function showLoginForm()
     {
-        return view('auth.clientlogin');
+        return view('login');
     }
 
     public function login(Request $request)
@@ -23,7 +23,7 @@ class LoginController extends Controller
 
         if(Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect()->route('clientdashboard');
+            return redirect()->route('dashboard');
         }
 
         throw ValidationException::withMessages([
