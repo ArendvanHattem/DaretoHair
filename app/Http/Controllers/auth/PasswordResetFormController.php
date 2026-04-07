@@ -12,7 +12,7 @@ class PasswordResetFormController extends Controller
 {
     public function index()
     {
-        return view('auth.passwordresetform');
+        return view('passwordresetform');
     }
 
     public function handle(Request $request)
@@ -49,6 +49,6 @@ class PasswordResetFormController extends Controller
                 $user->save();
             }
 
-        return redirect()->route('clientlogin')->with('success', 'Wachtwoord succesvol gereset. Je kunt nu inloggen met je nieuwe wachtwoord.');
+        return redirect()->route('login')->with('success', 'Wachtwoord succesvol gereset. Je kunt nu inloggen met je nieuwe wachtwoord.');
     }
 }

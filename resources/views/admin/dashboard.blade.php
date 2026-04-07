@@ -3,7 +3,7 @@
         <h1 class="display-4 fw-bold">Welkom, {{ Auth::user()->name }}</h1>
         <p class="lead">Proffesionele zorg voor jouw haar, met passie en vakmanschap.</p>
         <a href="/clientmakeappointment" class="btn btn-primary fw-bold">Maak nieuwe afspraak</a>
-        <a href="/pricelist" class="btn btn-primary fw-bold">Bekijk Prijzen</a>
+        <a href="/prijzen" class="btn btn-primary fw-bold">Bekijk Prijzen</a>
     </x-slot>
     <br>
     <h1 class="display-5 fw-bold text-center mb-5">Onze Behandelingen</h1>
@@ -22,7 +22,7 @@
 </div>
 
 <div class="text-center mt-3">
-  <a href="/pricelist" class="btn btn-auth">
+  <a href="/prijzen" class="btn btn-auth">
     Zie de prijslijst voor alle behandelingen
   </a>
 </div>

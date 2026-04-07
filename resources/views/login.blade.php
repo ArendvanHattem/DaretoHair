@@ -12,7 +12,7 @@
   <li class="nav-item">
     <a class="nav-link {{ request()->routeIs('loginShowForm') ? 'active' : '' }}"
        href="{{ route('login') }}">
-      Inloggen Klant
+      Inloggen
     </a>
   </li>
 
@@ -27,7 +27,7 @@
 
       <!-- Client panel -->
       <div class="auth-panel">
-        <h1 class="fw-bold display-6 mb-2">Klant inloggen</h1>
+        <h1 class="fw-bold display-6 mb-2">Inloggen</h1>
         <p class="fs-5 mb-4">Log in om je afspraken te beheren en nieuwe te boeken</p>
   
         @if (session('success'))
@@ -69,7 +69,7 @@
               <path d="M20 21a8 8 0 0 0-16 0"></path>
               <circle cx="12" cy="8" r="4"></circle>
             </svg>
-            Inloggen als Klant
+            Inloggen
           </button>
 
           <a href="{{ route('passwordreset') }}" class="d-block text-center mt-3 text-decoration-none fw-bold">

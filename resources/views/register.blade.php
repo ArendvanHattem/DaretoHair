@@ -12,7 +12,7 @@
   <li class="nav-item">
     <a class="nav-link {{ request()->routeIs('loginShowForm') ? 'active' : '' }}"
        href="{{ route('login') }}">
-      Inloggen Klant
+      Inloggen
     </a>
   </li>
 
@@ -25,7 +25,7 @@
 </ul>
       <!-- Client panel -->
     <div class="auth-panel">
-      <h1 class="fw-bold display-6 mb-2">Klant Registratie</h1>
+      <h1 class="fw-bold display-6 mb-2">Registreren</h1>
       <p class="fs-5 mb-4">Maak een nieuw account aan om je afspraak te boeken</p>
 
   <form method="POST" action="{{ route('register') }}">
@@ -122,7 +122,7 @@
         <path d="M22 11h-6"></path>
       </svg>
 
-      Registreren als Klant
+      Registreren
     </button>
 
     <!-- Error messages -->
