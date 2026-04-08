@@ -8,13 +8,13 @@ use App\Models\pricelist;
 
 class HomeController extends Controller
 {
-     public function index()
+    public function index()
     {
         // select pricelist where category is knippen & stylen and return 2 in random order
         $knippen = pricelist::where('category', 'knippen & stylen')
-        ->inRandomOrder()
-        ->take(2)
-        ->get();
+            ->inRandomOrder()
+            ->take(2)
+            ->get();
 
         // select pricelist where category is kleuren and return 2 in random order
         $kleuren = pricelist::where('category', 'kleuren')

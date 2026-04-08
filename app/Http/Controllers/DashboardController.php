@@ -10,9 +10,9 @@ class DashboardController extends Controller
     public function index()
     {
         $knippen = pricelist::where('category', 'knippen & stylen')
-        ->inRandomOrder()
-        ->take(2)
-        ->get();
+            ->inRandomOrder()
+            ->take(2)
+            ->get();
 
         $kleuren = pricelist::where('category', 'kleuren')
             ->inRandomOrder()

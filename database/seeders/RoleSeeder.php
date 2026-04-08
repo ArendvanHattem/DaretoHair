@@ -21,11 +21,12 @@ class RoleSeeder extends Seeder
         $role_medewerker = Role::create(['name' => 'medewerker']);
         $permission_manage_customers = Permission::create(['name' => 'manage customers']);
         $permission_manage_employees = Permission::create(['name' => 'manage employees']);
+        $permission_manage_prices = Permission::create(['name' => 'manage prices']);
 
-        $role_medewerker->givePermissionTo($permission_manage_customers, $permission_manage_employees );
+        $role_medewerker->givePermissionTo($permission_manage_customers, $permission_manage_employees, $permission_manage_prices);
 
-        // $user = User::find(12);
-        
-        // $user->assignRole($role_medewerker);
+        $user = User::find(12);
+
+        $user->assignRole($role_medewerker);
     }
 }

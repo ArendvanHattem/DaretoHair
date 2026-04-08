@@ -11,16 +11,19 @@ use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $klanten = User::role('klant')->get();
         return view('admin.klanten.klanten', compact('klanten'));
     }
 
-    public function create() {
-        return view('admin.klanten.create'); 
+    public function create()
+    {
+        return view('admin.klanten.create');
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'email' => 'required|email|unique:users',
             'name' => 'required|string|max:255',
@@ -37,16 +40,18 @@ class CustomerController extends Controller
         return redirect()->route('admin.klanten.index')->with('success', 'Klant aangemaakt');
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $klant = User::findOrFail($id);
         return view('admin.klanten.edit', compact('klant'));
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $klant = User::findOrFail($id);
 
         $validated = $request->validate([
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
         ]);
@@ -56,7 +61,8 @@ class CustomerController extends Controller
         return redirect()->route('admin.klanten.index')->with('success', 'Klant bijgewerkt');
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $klant = User::findOrFail($id);
         $klant->delete();
 
