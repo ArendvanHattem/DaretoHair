@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,19 +10,19 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-     public function showLoginForm()
+    public function showLoginForm()
     {
         return view('login');
     }
 
     public function login(Request $request)
     {
-         $validated = $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        if(Auth::attempt($validated)) {
+        if (Auth::attempt($validated)) {
             $request->session()->regenerate();
             return redirect()->route('dashboard');
         }

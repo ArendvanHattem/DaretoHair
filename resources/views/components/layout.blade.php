@@ -38,7 +38,7 @@
     <ul class="navbar-nav nav-pills mx-auto d-flex align-items-center gap-2">
 
       <li class="nav-item">
-        <x-nav-link href="{{ route('prijzen') }}" :active="request()->routeIs('prijzen')">
+        <x-nav-link href="{{ route('prijzen.public') }}" :active="request()->routeIs('prijzen.public')">
           Prijslijst
         </x-nav-link>
       </li>

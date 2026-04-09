@@ -20,7 +20,9 @@ use App\Http\Controllers\auth\PasswordResetFormController;
 // Groepeer algemene pagina's bij één controller
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/team', [TeamController::class, 'index']);
-Route::get('/over-ons', function () { return view('over-ons');});
+Route::get('/over-ons', function () {
+    return view('over-ons');
+});
 Route::get('/prijzen', [PriceController::class, 'index'])->name('prijzen');
 
 // --- AUTHENTICATIE ---
@@ -39,12 +41,20 @@ Route::post('/passwordreset', [PasswordResetController::class, 'handle'])->name(
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
 
+// De publieke route voor iedereen (klanten en medewerkers)
+Route::get('/prijzen', [PriceController::class, 'publicIndex'])->name('prijzen.public');
+
 // --- ADMIN (MEDEWERKERS) ---
 // Prefix 'admin' voor het scheiden van de content voor de klanten
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('medewerkers', EmployeeController::class)->middleware('can:manage employees');;
+    Route::resource('medewerkers', EmployeeController::class)->middleware('can:manage employees');
     Route::resource('klanten', CustomerController::class)->middleware('can:manage customers');
+    // Deze index wijst nu naar de tabel-weergave in het dashboard
+    Route::resource('prijzen', PriceController::class)->middleware('can:manage prices');
 });
+
+
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'role:medewerker']);
 
