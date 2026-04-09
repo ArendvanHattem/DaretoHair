@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 use Spatie\Permission\Models\Role;
@@ -11,22 +10,50 @@ use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $role_klant = Role::create(['name' => 'klant']);
+        // ✅ Always include guard_name (prevents subtle bugs)
+        $role_klant = Role::firstOrCreate([
+            'name' => 'klant',
+            'guard_name' => 'web',
+        ]);
 
-        $role_medewerker = Role::create(['name' => 'medewerker']);
-        $permission_manage_customers = Permission::create(['name' => 'manage customers']);
-        $permission_manage_employees = Permission::create(['name' => 'manage employees']);
-        $permission_manage_prices = Permission::create(['name' => 'manage prices']);
+        $role_medewerker = Role::firstOrCreate([
+            'name' => 'medewerker',
+            'guard_name' => 'web',
+        ]);
 
-        $role_medewerker->givePermissionTo($permission_manage_customers, $permission_manage_employees, $permission_manage_prices);
+        // ✅ Same for permissions
+        $permission_manage_customers = Permission::firstOrCreate([
+            'name' => 'manage customers',
+            'guard_name' => 'web',
+        ]);
 
-        $user = User::find(12);
+        $permission_manage_employees = Permission::firstOrCreate([
+            'name' => 'manage employees',
+            'guard_name' => 'web',
+        ]);
 
-        $user->assignRole($role_medewerker);
+        $permission_manage_prices = Permission::firstOrCreate([
+            'name' => 'manage prices',
+            'guard_name' => 'web',
+        ]);
+
+        // ✅ Sync permissions (better than stacking duplicates)
+        $role_medewerker->syncPermissions([
+            $permission_manage_customers,
+            $permission_manage_employees,
+            $permission_manage_prices,
+        ]);
+
+        // ✅ Assign role to user safely
+        if ($user = User::find(1)) {
+            $user->syncRoles([$role_medewerker]);
+
+            // ❗ Optional: keep your column in sync (temporary fix)
+            $user->update([
+                'role' => 'medewerker',
+            ]);
+        }
     }
 }
