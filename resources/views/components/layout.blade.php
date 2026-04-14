@@ -34,27 +34,29 @@
 <nav class="navbar navbar-expand-lg border-bottom border-dark">
   <div class="container-fluid d-flex align-items-center">
 
-    @auth
-    <a class="navbar-brand me-3" href="/clientdashboard">
-      <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
-    </a>
+    @hasrole('medewerker')
+        {{-- Ingelogd als medewerker: naar dashboard --}}
+        <a class="navbar-brand me-3" href="/dashboard">
+          <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
+        </a>
     @else
-    <a class="navbar-brand me-3" href="/">
-      <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
-    </a>
-    @endauth
+        {{-- Gast of Klant: naar de homepage --}}
+        <a class="navbar-brand me-3" href="/">
+          <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
+        </a>
+    @endhasrole
 
     <!-- Center: Nav links -->
     <ul class="navbar-nav nav-pills mx-auto d-flex align-items-center gap-2">
 
       <li class="nav-item">
-        <x-nav-link href="{{ route('pricelist') }}" :active="request()->routeIs('pricelist')">
+        <x-nav-link href="{{ route('prijzen.public') }}" :active="request()->routeIs('prijzen.public')">
           Prijslijst
         </x-nav-link>
       </li>
 
       <li class="nav-item">
-        <x-nav-link href="/about" :active="request()->is('about')">
+        <x-nav-link href="/over-ons" :active="request()->is('over-ons')">
           Over Ons
         </x-nav-link>
       </li>
@@ -97,7 +99,7 @@
         </div>
 
         <!-- Logout -->
-        <form action="{{ route('clientlogout') }}" method="POST" class="m-0">
+        <form action="{{ route('logout') }}" method="POST" class="m-0">
           @csrf
           <button type="submit" class="btn btn-primary fw-bold">
             Log Out
@@ -106,7 +108,7 @@
 
       </div>
     @else
-      <a href="{{ route('clientlogin') }}" class="btn btn-primary fw-bold">
+      <a href="{{ route('login') }}" class="btn btn-primary fw-bold">
         Log In
       </a>
     @endauth

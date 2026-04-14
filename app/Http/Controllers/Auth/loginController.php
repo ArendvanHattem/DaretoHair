@@ -1,30 +1,30 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class loginController extends Controller
+class LoginController extends Controller
 {
-     public function showLoginForm()
+    public function showLoginForm()
     {
-        return view('auth.clientlogin');
+        return view('login');
     }
 
     public function login(Request $request)
     {
-         $validated = $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        if(Auth::attempt($validated)) {
+        if (Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect()->route('clientdashboard');
+            return redirect()->route('dashboard');
         }
 
         throw ValidationException::withMessages([
