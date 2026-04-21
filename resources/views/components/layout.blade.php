@@ -73,12 +73,13 @@
 
     <!-- Right: Auth area -->
     @auth
-      <div class="d-flex align-items-center gap-3">
+      <div class="d-flex align-items-center gap-3 dropdown btn btn-primary fw-bold">
 
         <!-- User icon + name -->
-        <div class="d-flex align-items-center gap-2 fw-bold">
+        <div class="d-flex align-items-center gap-2 fw-bold dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          
           <svg width="34" height="34" viewBox="0 0 24 24"
-               fill="none" stroke="black" stroke-width="1.8">
+               fill="none" stroke="white" stroke-width="1.8">
             <path d="M20 21a8 8 0 0 0-16 0"></path>
             <circle cx="12" cy="8" r="4"></circle>
           </svg>
@@ -86,15 +87,27 @@
           <span>{{ Auth::user()->name }}</span>
         </div>
 
-        <!-- Logout -->
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+  
+          <li>
+            <a class="dropdown-item" href="/account">Mijn account</a>
+          </li>
+
+          <li><hr class="dropdown-divider"></li>
+
+          <li>
         <form action="{{ route('logout') }}" method="POST" class="m-0">
           @csrf
-          <button type="submit" class="btn btn-primary fw-bold">
+          <button type="submit" class="btn btn-primary fw-bold" style="margin-left: 35px;">
             Log Out
           </button>
         </form>
+          </li>
+
+        </ul>
 
       </div>
+
     @else
       <a href="{{ route('login') }}" class="btn btn-primary fw-bold">
         Log In
