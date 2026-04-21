@@ -73,12 +73,12 @@
 
     <!-- Right: Auth area -->
     @auth
-      <div class="d-flex align-items-center gap-3">
+      <div class="d-flex align-items-center gap-3 btn btn-primary fw-bold">
 
         <!-- User icon + name -->
         <div class="d-flex align-items-center gap-2 fw-bold">
           <svg width="34" height="34" viewBox="0 0 24 24"
-               fill="none" stroke="black" stroke-width="1.8">
+               fill="none" stroke="white" stroke-width="1.8">
             <path d="M20 21a8 8 0 0 0-16 0"></path>
             <circle cx="12" cy="8" r="4"></circle>
           </svg>
@@ -86,13 +86,12 @@
           <span>{{ Auth::user()->name }}</span>
         </div>
 
-        <!-- Logout -->
-        <form action="{{ route('logout') }}" method="POST" class="m-0">
+        {{-- <form action="{{ route('logout') }}" method="POST" class="m-0">
           @csrf
           <button type="submit" class="btn btn-primary fw-bold">
-            Log Out
+            Log uit
           </button>
-        </form>
+        </form> --}}
 
       </div>
     @else
