@@ -9,9 +9,21 @@ class MedewerkerSeeder extends Seeder
 {
     public function run(): void
     {
-        // Maak 5 medewerkers aan met de medewerker-state uit de factory
+        // 1. Maak het test account aan
+        $admin = User::create([
+            'name' => 'Test',
+            'email' => 'admin@test.nl',
+            'phone' => '0612345678',
+            'password' => bcrypt('geheim123'),
+            'specialiteit' => 'testing',
+        ]);
+
+        // 2. CRUCIAAL: Verander de rol van 'klant' (uit je model) naar 'medewerker'
+        $admin->syncRoles(['medewerker']);
+
+        // 3. Maak de overige medewerkers via de factory
         User::factory(5)->medewerker()->create()->each(function ($user) {
-            // Spatie rol toewijzen en eventuele standaard 'klant' rol overschrijven
+            // Ook hier: overschrijf de automatische klant-rol
             $user->syncRoles(['medewerker']);
         });
     }

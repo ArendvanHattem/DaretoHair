@@ -20,7 +20,7 @@ class PricelistFactory extends Factory
             'service' => fake()->word(),
             'description' => fake()->sentence(),
             'amount' => fake()->randomFloat(2, 15, 85), // Prijs tussen 15.00 en 85.00
-            'category' => fake()->randomElement(['Knippen', 'Kleuren', 'Styling']),
+            'specialiteit' => fake()->randomElement(['knippen & stylen', 'barber', 'kleuren']),
         ];
     }
 }

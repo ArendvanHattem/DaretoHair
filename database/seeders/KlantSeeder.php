@@ -9,7 +9,10 @@ class KlantSeeder extends Seeder
 {
     public function run(): void
     {
-        // Maak 10 klanten aan
-        User::factory(5)->klant()->create();
+
+
+        User::factory(5)->klant()->create()->each(function ($user) {
+            $user->syncRoles(['klant']);
+        });
     }
 }

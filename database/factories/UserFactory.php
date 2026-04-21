@@ -29,7 +29,6 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'phone' => fake()->phoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => 'klant',
             'specialiteit' => null,
             'photo' => null,
             'remember_token' => Str::random(10),
@@ -51,15 +50,12 @@ class UserFactory extends Factory
     public function medewerker(): static
     {
         return $this->state(fn(array $attributes) => [
-            'role' => 'medewerker',
             'specialiteit' => fake()->randomElement(['Knippen', 'Kleuren', 'Barber', 'Styling']),
         ]);
     }
 
     public function klant(): static
     {
-        return $this->state(fn(array $attributes) => [
-            'role' => 'klant',
-        ]);
+        return $this->state(fn(array $attributes) => []);
     }
 }
