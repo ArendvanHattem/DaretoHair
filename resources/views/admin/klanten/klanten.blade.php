@@ -55,7 +55,7 @@
 
                  @empty
             <div>
-             <p class="px-4">Druk op het plusje om een werknemer aan te maken.</p>
+             <p class="px-4">Druk op het plusje om een klant aan te maken.</p>
             </div>
             @endforelse
         </tbody>

@@ -11,8 +11,7 @@
             <div class="col-md-4">
                 <div class="card overflow-hidden">
                     <!-- Image -->
-                    <img src="{{$lid->photo}}" style="height:300px; object-fit:cover;" alt="{{$lid->naam}}">
-
+                        <img src="{{ $lid->photo ?? asset('images/logo.png') }}" > 
                     <!-- Content -->
                     <div class="flex-1 p-4 text-center flex flex-col justify-center" style="height: 150px;">
                         <h2 class="card-title fs-4">{{$lid->name}}</h2>

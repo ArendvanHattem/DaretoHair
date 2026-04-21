@@ -43,7 +43,6 @@ class EmployeeController extends Controller
         ]);
 
         // 3. De rol 'klant' overschrijven naar 'medewerker'
-        // syncRoles verwijdert 'klant' (die uit de booted methode komt) en zet 'medewerker' neer
         $employee->syncRoles(['medewerker']);
 
         return redirect()->route('admin.medewerkers.index')->with('success', 'Medewerker succesvol aangemaakt.');

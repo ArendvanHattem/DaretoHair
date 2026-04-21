@@ -23,6 +23,7 @@ class SignupController extends Controller
                 'name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
                 'password' => 'required|string|min:8|confirmed',
+
             ],
             [
                 'email.unique' => 'Er bestaat al een account met dit e-mailadres.',
@@ -30,7 +31,10 @@ class SignupController extends Controller
             ]
         );
 
+
         $user = User::create($validated);
+
+        $user->assignRole('klant');
 
         Auth::login($user);
 
