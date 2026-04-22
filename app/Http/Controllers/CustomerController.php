@@ -37,6 +37,8 @@ class CustomerController extends Controller
 
         User::create($validated);
 
+        $user->assignRole('klant');
+
         return redirect()->route('admin.klanten.index')->with('success', 'Klant aangemaakt');
     }
 

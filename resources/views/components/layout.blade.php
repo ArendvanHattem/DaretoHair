@@ -73,7 +73,7 @@
 
     <!-- Right: Auth area -->
     @auth
-      <div class="d-flex align-items-center gap-3 dropdown btn btn-primary fw-bold">
+      <div class="d-flex align-items-center gap-3 btn btn-primary fw-bold">
 
         <!-- User icon + name -->
         <div class="d-flex align-items-center gap-2 fw-bold dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -87,24 +87,12 @@
           <span>{{ Auth::user()->name }}</span>
         </div>
 
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-  
-          <li>
-            <a class="dropdown-item" href="/account">Mijn account</a>
-          </li>
-
-          <li><hr class="dropdown-divider"></li>
-
-          <li>
-        <form action="{{ route('logout') }}" method="POST" class="m-0">
+        {{-- <form action="{{ route('logout') }}" method="POST" class="m-0">
           @csrf
-          <button type="submit" class="btn btn-primary fw-bold" style="margin-left: 35px;">
-            Log Out
+          <button type="submit" class="btn btn-primary fw-bold">
+            Log uit
           </button>
-        </form>
-          </li>
-
-        </ul>
+        </form> --}}
 
       </div>
 

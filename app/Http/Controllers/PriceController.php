@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pricelist;
+use App\Models\Pricelist;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,12 +11,12 @@ class PriceController extends Controller
     public function publicIndex()
     {
 
-        // fetch all of the prices from the pricelist
-        $prices = pricelist::all();
+        // fetch all of the prices from the Pricelist
+        $prices = Pricelist::all();
 
-        // save pricelists based on categories in variables and return to view
-        $knippen_stylen = pricelist::where('category', 'knippen & stylen')->get();
-        $kleuren = pricelist::where('category', 'kleuren')->get();
+        // save Pricelists based on categories in variables and return to view
+        $knippen_stylen = Pricelist::where('category', 'knippen & stylen')->get();
+        $kleuren = Pricelist::where('category', 'kleuren')->get();
 
         return view('prijzen', compact('knippen_stylen', 'kleuren'));
     }
@@ -24,8 +24,8 @@ class PriceController extends Controller
 
     public function index()
     {
-        // fetch all of the prices from the pricelist
-        $prices = pricelist::all();
+        // fetch all of the prices from the Pricelist
+        $prices = Pricelist::all();
 
         return view('admin.prijzen.index', compact('prices'));
     }
@@ -46,7 +46,7 @@ class PriceController extends Controller
         ]);
 
         // 2. Gebruiker aanmaken
-        $price = pricelist::create([
+        $price = Pricelist::create([
             'service' => $validated['service'],
             'description' => $validated['beschrijving'],
             'amount' => $validated['prijs'],
@@ -59,13 +59,13 @@ class PriceController extends Controller
 
     public function edit($id)
     {
-        $price = pricelist::findOrFail($id);
+        $price = Pricelist::findOrFail($id);
         return view('admin.prijzen.edit', compact('price'));
     }
 
     public function update(Request $request, $id)
     {
-        $price = pricelist::findOrFail($id);
+        $price = Pricelist::findOrFail($id);
 
         // 1. Validatie
         $validated = $request->validate([
@@ -88,7 +88,7 @@ class PriceController extends Controller
 
     public function destroy($id)
     {
-        $price = pricelist::findOrFail($id);
+        $price = Pricelist::findOrFail($id);
         $price->delete();
 
         return redirect()->route('admin.prijzen.index')->with('success', 'Prijs verwijderd.');

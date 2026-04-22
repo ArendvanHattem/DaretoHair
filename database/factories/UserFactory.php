@@ -27,18 +27,35 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'phone' => fake()->phoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
+            'specialiteit' => null,
+            'photo' => null,
             'remember_token' => Str::random(10),
         ];
     }
+
+
 
     /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function medewerker(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'specialiteit' => fake()->randomElement(['Knippen', 'Kleuren', 'Barber', 'Styling']),
+        ]);
+    }
+
+    public function klant(): static
+    {
+        return $this->state(fn(array $attributes) => []);
     }
 }
