@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Appointment;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Hairdresser;
 
 class ClientAgendaController extends Controller
 {
@@ -17,6 +17,15 @@ class ClientAgendaController extends Controller
         }
 
         $isAdmin = auth()->user()->role === 'admin';
+        $selectedHairdresserId = $request->input('hairdresser_id');
+
+        // Get all active hairdressers for the filter dropdown
+        $hairdressers = Hairdresser::where('is_active', true)->get();
+
+        // Auto-select first hairdresser if none selected and hairdressers exist
+        if (!$selectedHairdresserId && $hairdressers->count() > 0) {
+            $selectedHairdresserId = $hairdressers->first()->id;
+        }
 
         $weekStart = $request->input('week', now()->startOfWeek()->format('Y-m-d'));
         $weekStart = Carbon::parse($weekStart);
@@ -26,13 +35,18 @@ class ClientAgendaController extends Controller
             $days->push($weekStart->copy()->addDays($i));
         }
         
-        $appointments = Appointment::with($isAdmin ? 'user' : [])
+        // Filter appointments by hairdresser if selected
+        $appointmentsQuery = Appointment::with($isAdmin ? 'user' : [])
             ->whereBetween('appointment_date', [
                 $weekStart,
                 $weekStart->copy()->addWeek()
-            ])
-            ->orderBy('appointment_date')
-            ->get();
+            ]);
+        
+        if ($selectedHairdresserId) {
+            $appointmentsQuery->where('hairdresser_id', $selectedHairdresserId);
+        }
+        
+        $appointments = $appointmentsQuery->orderBy('appointment_date')->get();
         
         $appointmentsByDay = $appointments->groupBy(function($appointment) {
             return Carbon::parse($appointment->appointment_date)->format('Y-m-d');
@@ -41,7 +55,6 @@ class ClientAgendaController extends Controller
         $previousWeek = $weekStart->copy()->subWeek()->format('Y-m-d');
         $nextWeek = $weekStart->copy()->addWeek()->format('Y-m-d');
         
-        // Opening hours for different days
         $openingHours = [
             'Monday' => ['09:00', '18:00'],
             'Tuesday' => ['09:00', '18:00'],
@@ -59,7 +72,9 @@ class ClientAgendaController extends Controller
             'previousWeek', 
             'nextWeek',
             'isAdmin',
-            'openingHours'
+            'openingHours',
+            'hairdressers',
+            'selectedHairdresserId'
         ));
     }
 
@@ -82,7 +97,9 @@ class ClientAgendaController extends Controller
             'Sunday' => ['closed', 'closed'],
         ];
         
-        return view('appointments.create', compact('selectedDate', 'selectedTime', 'openingHours'));
+        $hairdressers = Hairdresser::where('is_active', true)->get();
+        
+        return view('appointments.create', compact('selectedDate', 'selectedTime', 'openingHours', 'hairdressers'));
     }
 
     public function store(Request $request)
@@ -92,18 +109,6 @@ class ClientAgendaController extends Controller
         }
         
         $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
-        
-        if ($appointmentDateTime->diffInHours(now()) < 12) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors(['appointment_date' => 'Afspraken moeten minimaal 12 uur van tevoren worden geboekt.']);
-        }
-        
-        if (!auth()->check()) {
-            return redirect()->route('clientsignup');
-        }
-        
-        $appointmentDateTime = $request->appointment_date . ' ' . $request->appointment_time;
         
         // Duration mapping
         $durationMap = [
@@ -119,8 +124,30 @@ class ClientAgendaController extends Controller
         ];
         
         $duration = $durationMap[$request->service] ?? 15;
+        $appointmentEnd = $appointmentDateTime->copy()->addMinutes($duration);
         
-        // Only validate - no extra time checks (the frontend already prevents invalid times)
+        // 12-hour rule for appointments
+        if (now()->diffInHours($appointmentDateTime) < 12) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['appointment_time' => 'Afspraken moeten minimaal 12 uur van tevoren worden geboekt.']);
+        }
+        
+        // Check for overlapping appointments with same hairdresser
+        $existingAppointment = Appointment::where('hairdresser_id', $request->hairdresser_id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function($query) use ($appointmentDateTime, $appointmentEnd) {
+                $query->where('appointment_date', '<', $appointmentEnd)
+                    ->whereRaw('DATE_ADD(appointment_date, INTERVAL duration MINUTE) > ?', [$appointmentDateTime]);
+            })
+            ->exists();
+        
+        if ($existingAppointment) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['appointment_time' => 'Deze kapper is al bezet op deze tijd. Kies een andere tijd of kapper.']);
+        }
+        
         $validated = $request->validate([
             'service' => 'required|string|max:255',
             'appointment_date' => 'required|date',
@@ -130,6 +157,7 @@ class ClientAgendaController extends Controller
         
         Appointment::create([
             'user_id' => auth()->user()->id,
+            'hairdresser_id' => $request->hairdresser_id,
             'service' => $validated['service'],
             'appointment_date' => $appointmentDateTime,
             'duration' => $duration,
@@ -145,7 +173,12 @@ class ClientAgendaController extends Controller
     {
         $appointment = Appointment::findOrFail($id);
         $user = auth()->user();
-        $currentWeek = request()->input('week', now()->startOfWeek()->format('Y-m-d'));
+        $currentWeek = request()->input('week', $appointment->appointment_date->startOfWeek()->format('Y-m-d'));
+        
+        // Prevent "null" string from being passed
+        if ($currentWeek === 'null') {
+            $currentWeek = $appointment->appointment_date->startOfWeek()->format('Y-m-d');
+        }
         
         $openingHours = [
             'Monday' => ['09:00', '18:00'],
@@ -157,14 +190,15 @@ class ClientAgendaController extends Controller
             'Sunday' => ['closed', 'closed'],
         ];
         
+        // Get hairdressers for the dropdown
+        $hairdressers = Hairdresser::where('is_active', true)->get();
+        
         // Admin can always edit
         if ($user->role === 'admin') {
-            return view('appointments.edit', compact('appointment', 'currentWeek', 'openingHours'));
+            return view('appointments.edit', compact('appointment', 'currentWeek', 'openingHours', 'hairdressers'));
         }
         
         // Client restrictions
-        $hoursUntilAppointment = now()->diffInHours($appointment->appointment_date, false);
-        
         if ($appointment->user_id !== $user->id) {
             return redirect()->route('clientagenda')->with('error', 'Je kunt alleen je eigen afspraken bewerken.');
         }
@@ -173,11 +207,11 @@ class ClientAgendaController extends Controller
             return redirect()->route('clientagenda')->with('error', 'Deze afspraak is al bevestigd of geannuleerd en kan niet meer worden gewijzigd.');
         }
         
-        if ($hoursUntilAppointment < 24) {
-            return redirect()->route('clientagenda')->with('error', 'Afspraken kunnen alleen 24 uur van tevoren worden gewijzigd. Neem contact op met de salon.');
+        if (now()->diffInHours($appointment->appointment_date) < 12) {
+            return redirect()->route('clientagenda')->with('error', 'Afspraken kunnen alleen 12 uur van tevoren worden gewijzigd. Neem contact op met de salon.');
         }
         
-        return view('appointments.edit', compact('appointment', 'currentWeek', 'openingHours'));
+        return view('appointments.edit', compact('appointment', 'currentWeek', 'openingHours', 'hairdressers'));
     }
 
     public function update(Request $request, $id)
@@ -185,11 +219,15 @@ class ClientAgendaController extends Controller
         $appointment = Appointment::findOrFail($id);
         $user = auth()->user();
         
+        $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
+        
+        // Get duration from request or use existing
+        $duration = (int) $request->duration;
+        $appointmentEnd = $appointmentDateTime->copy()->addMinutes($duration);
+        
         // Admin can always update
         if ($user->role !== 'admin') {
             // Client restrictions
-            $hoursUntilAppointment = now()->diffInHours($appointment->appointment_date, false);
-            
             if ($appointment->user_id !== $user->id) {
                 return redirect()->route('clientagenda')->with('error', 'Je kunt alleen je eigen afspraken bewerken.');
             }
@@ -197,13 +235,30 @@ class ClientAgendaController extends Controller
             if ($appointment->status !== 'pending') {
                 return redirect()->route('clientagenda')->with('error', 'Deze afspraak is al bevestigd of geannuleerd.');
             }
-            
-            if ($hoursUntilAppointment < 24) {
-                return redirect()->route('clientagenda')->with('error', 'Afspraken kunnen alleen 24 uur van tevoren worden gewijzigd.');
+
+            // 12-hour rule for appointments
+            if (now()->diffInHours($appointmentDateTime) < 12) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['appointment_time' => 'Afspraken kunnen alleen 12 uur van tevoren worden gewijzigd.']);
             }
         }
         
-        $appointmentDateTime = $request->appointment_date . ' ' . $request->appointment_time;
+        // Check for overlapping appointments with same hairdresser (excluding current appointment)
+        $existingAppointment = Appointment::where('hairdresser_id', $request->hairdresser_id)
+            ->where('id', '!=', $id)
+            ->whereIn('status', ['pending', 'confirmed'])  
+            ->where(function($query) use ($appointmentDateTime, $appointmentEnd) {
+                $query->where('appointment_date', '<', $appointmentEnd)
+                    ->whereRaw('DATE_ADD(appointment_date, INTERVAL duration MINUTE) > ?', [$appointmentDateTime]);
+            })
+            ->exists();
+
+        if ($existingAppointment) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['appointment_time' => 'Deze kapper is al bezet op deze tijd. Kies een andere tijd of kapper.']);
+        }
         
         $validated = $request->validate([
             'service' => 'required|string|max:255',
@@ -217,6 +272,7 @@ class ClientAgendaController extends Controller
         $roundedDuration = max(5, ceil($validated['duration'] / 5) * 5);
         
         $appointment->update([
+            'hairdresser_id' => $request->hairdresser_id,  // Add this line
             'service' => $validated['service'],
             'appointment_date' => $appointmentDateTime,
             'duration' => $roundedDuration,
@@ -238,8 +294,6 @@ class ClientAgendaController extends Controller
         // Admin can always delete
         if ($user->role !== 'admin') {
             // Client restrictions
-            $hoursUntilAppointment = now()->diffInHours($appointment->appointment_date, false);
-            
             if ($appointment->user_id !== $user->id) {
                 return redirect()->route('clientagenda')->with('error', 'Je kunt alleen je eigen afspraken verwijderen.');
             }
@@ -248,8 +302,8 @@ class ClientAgendaController extends Controller
                 return redirect()->route('clientagenda')->with('error', 'Deze afspraak is al bevestigd of geannuleerd.');
             }
             
-            if ($hoursUntilAppointment < 24) {
-                return redirect()->route('clientagenda')->with('error', 'Afspraken kunnen alleen 24 uur van tevoren worden geannuleerd. Neem contact op met de salon.');
+            if (now()->diffInHours($appointment->appointment_date) < 12) {
+                return redirect()->route('clientagenda')->with('error', 'Afspraken kunnen alleen 12 uur van tevoren worden geannuleerd. Neem contact op met de salon.');
             }
         }
         

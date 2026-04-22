@@ -37,13 +37,29 @@
                     @enderror
                 </div>
                 
+                <!-- Hairdresser selection - moved OUT of script tag -->
+                <div class="mb-3">
+                    <label for="hairdresser_id" class="form-label">Kapper</label>
+                    <select class="form-control @error('hairdresser_id') is-invalid @enderror" id="hairdresser_id" name="hairdresser_id" required>
+                        <option value="">Selecteer een kapper</option>
+                        @foreach($hairdressers as $hairdresser)
+                            <option value="{{ $hairdresser->id }}" {{ old('hairdresser_id') == $hairdresser->id ? 'selected' : '' }}>
+                                {{ $hairdresser->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('hairdresser_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="appointment_date" class="form-label">Datum</label>
-                       <input type="date" class="form-control @error('appointment_date') is-invalid @enderror" 
-                            id="appointment_date" name="appointment_date" 
-                            value="{{ old('appointment_date', $selectedDate) }}" 
-                            min="{{ now()->format('Y-m-d') }}" required>
+                        <input type="date" class="form-control @error('appointment_date') is-invalid @enderror" 
+                               id="appointment_date" name="appointment_date" 
+                               value="{{ old('appointment_date', $selectedDate) }}" 
+                               min="{{ now()->format('Y-m-d') }}" required>
                         @error('appointment_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -54,9 +70,6 @@
                         <select class="form-control @error('appointment_time') is-invalid @enderror" 
                                 id="appointment_time" name="appointment_time" required>
                             <option value="">Selecteer tijd</option>
-                            @php
-                                // This will be populated by JavaScript based on selected date
-                            @endphp
                         </select>
                         @error('appointment_time')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -67,8 +80,8 @@
                 <div class="mb-3">
                     <label for="notes" class="form-label">Notities (optioneel)</label>
                     <textarea class="form-control @error('notes') is-invalid @enderror" 
-                            id="notes" name="notes" rows="3" 
-                            placeholder="Bijvoorbeeld: Gewenste tijdsduur, speciale wensen, etc.">{{ old('notes') }}</textarea>
+                              id="notes" name="notes" rows="3" 
+                              placeholder="Bijvoorbeeld: Gewenste tijdsduur, speciale wensen, etc.">{{ old('notes') }}</textarea>
                     @error('notes')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -81,6 +94,7 @@
             </form>
         </div>
     </div>
+    
     <script>
     // Opening hours based on day of week
     const openingHours = @json($openingHours);
@@ -122,7 +136,6 @@
         const endHour = parseInt(hours[1].split(':')[0]);
         const endMinute = parseInt(hours[1].split(':')[1]);
         
-        // If treatment selected, calculate last possible start time
         let endTotalMinutes = (endHour * 60 + endMinute);
         
         if (selectedTreatment && treatmentDurations[selectedTreatment]) {
@@ -145,6 +158,86 @@
         }
         
         return slots;
+    }
+
+    // Get first bookable date
+    function getFirstBookableDate() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let checkDate = new Date(today);
+        let maxChecks = 14;
+        
+        for (let i = 0; i < maxChecks; i++) {
+            const dayName = checkDate.toLocaleDateString('en-US', { weekday: 'long' });
+            const hours = openingHours[dayName];
+            
+            if (hours && hours[0] !== 'closed') {
+                const closingHour = parseInt(hours[1].split(':')[0]);
+                const cutoffTime = new Date(checkDate);
+                cutoffTime.setHours(closingHour - 12, 0, 0, 0);
+                
+                if (checkDate.toDateString() === today.toDateString()) {
+                    if (new Date() < cutoffTime) {
+                        return checkDate;
+                    }
+                } else {
+                    return checkDate;
+                }
+            }
+            checkDate.setDate(checkDate.getDate() + 1);
+        }
+        return null;
+    }
+
+    // Set initial date to first bookable date on page load (silent auto-push)
+    const dateInput = document.getElementById('appointment_date');
+    const initialDate = getFirstBookableDate();
+    if (initialDate && dateInput) {
+        const year = initialDate.getFullYear();
+        const month = String(initialDate.getMonth() + 1).padStart(2, '0');
+        const day = String(initialDate.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
+    }
+
+    function checkDateBookable() {
+        const dateInput = document.getElementById('appointment_date');
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+        const hours = openingHours[dayName];
+        
+        let errorMessage = '';
+        
+        if (selectedDate < today) {
+            errorMessage = '⚠️ Deze datum ligt in het verleden. Kies een andere datum.';
+        } else if (!hours || hours[0] === 'closed') {
+            errorMessage = '⚠️ De salon is gesloten op ' + selectedDate.toLocaleDateString('nl-NL', { weekday: 'long' }) + '.';
+        } else if (selectedDate.toDateString() === today.toDateString()) {
+            const closingHour = parseInt(hours[1].split(':')[0]);
+            const cutoffTime = new Date(selectedDate);
+            cutoffTime.setHours(closingHour - 12, 0, 0, 0);
+            
+            if (new Date() >= cutoffTime) {
+                errorMessage = '⚠️ Het is te laat om vandaag nog een afspraak te boeken. Kies een andere datum.';
+            }
+        }
+        
+        const existingError = document.getElementById('dateBookableError');
+        if (existingError) existingError.remove();
+        
+        if (errorMessage) {
+            const dateField = document.getElementById('appointment_date');
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'dateBookableError';
+            errorDiv.className = 'alert alert-warning mt-2';
+            errorDiv.innerHTML = errorMessage;
+            dateField.parentNode.appendChild(errorDiv);
+        }
+        
+        updateTimeOptions();
     }
 
     function updateTimeOptions() {
@@ -175,63 +268,51 @@
         
         timeSelect.innerHTML = options;
         
-        // Show/hide notes requirement for "Anders"
         if (selectedTreatment === 'Anders') {
             notesField.required = true;
             notesField.placeholder = "Gewenste tijdsduur en behandeling (verplicht)";
-            notesField.closest('.mb-3').querySelector('label').innerHTML = 'Notities <span class="text-danger">*</span>';
+            const label = notesField.closest('.mb-3').querySelector('label');
+            if (label) label.innerHTML = 'Notities <span class="text-danger">*</span>';
         } else {
             notesField.required = false;
             notesField.placeholder = "Gewenste tijdsduur (optioneel), speciale wensen, etc.";
-            notesField.closest('.mb-3').querySelector('label').innerHTML = 'Notities (optioneel)';
+            const label = notesField.closest('.mb-3').querySelector('label');
+            if (label) label.innerHTML = 'Notities (optioneel)';
         }
-    }
-
-    function updateTreatmentOptions() {
-        const dateInput = document.getElementById('appointment_date');
-        const treatmentSelect = document.getElementById('service');
-        const timeSelect = document.getElementById('appointment_time');
-        
-        if (!dateInput.value || !treatmentSelect.value) return;
-        
-        const selectedDate = new Date(dateInput.value);
-        const selectedTreatment = treatmentSelect.value;
-        
-        const slots = generateTimeSlots(selectedDate, selectedTreatment);
-        
-        // Just clear time if not available, no alert
-        if (slots.length === 0 && selectedTreatment) {
-            treatmentSelect.value = '';
-            timeSelect.innerHTML = '<option value="">Selecteer eerst een behandeling</option>';
-        }
-        
-        updateTimeOptions();
     }
 
     // Event listeners
-    document.getElementById('appointment_date').addEventListener('change', updateTimeOptions);
-    document.getElementById('service').addEventListener('change', function() {
-        updateTimeOptions();
-        // Also check if time is still valid with new treatment
-        const timeSelect = document.getElementById('appointment_time');
-        if (timeSelect.value && timeSelect.options.length > 0) {
-            // Check if selected time is still available
-            let timeExists = false;
-            for (let i = 0; i < timeSelect.options.length; i++) {
-                if (timeSelect.options[i].value === timeSelect.value) {
-                    timeExists = true;
-                    break;
+    if (dateInput) {
+        dateInput.addEventListener('change', function() {
+            checkDateBookable();
+            updateTimeOptions();
+        });
+    }
+    
+    const serviceSelect = document.getElementById('service');
+    if (serviceSelect) {
+        serviceSelect.addEventListener('change', function() {
+            updateTimeOptions();
+            const timeSelect = document.getElementById('appointment_time');
+            if (timeSelect && timeSelect.value && timeSelect.options.length > 0) {
+                let timeExists = false;
+                for (let i = 0; i < timeSelect.options.length; i++) {
+                    if (timeSelect.options[i].value === timeSelect.value) {
+                        timeExists = true;
+                        break;
+                    }
+                }
+                if (!timeExists) {
+                    timeSelect.value = '';
+                    alert('De geselecteerde tijd past niet bij deze behandeling. Kies een nieuwe tijd.');
                 }
             }
-            if (!timeExists) {
-                timeSelect.value = '';
-                alert('De geselecteerde tijd past niet bij deze behandeling. Kies een nieuwe tijd.');
-            }
-        }
-    });
+        });
+    }
 
-    // Run on page load if date is preselected
-    if (document.getElementById('appointment_date').value) {
+    // Run on page load
+    if (dateInput && dateInput.value) {
+        checkDateBookable();
         updateTimeOptions();
     }
     </script>

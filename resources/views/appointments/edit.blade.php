@@ -18,6 +18,18 @@
                     <input type="text" class="form-control" value="{{ $appointment->user->name ?? 'Onbekend' }}" disabled>
                 </div>
                 
+                <div class="mb-3">
+                    <label for="hairdresser_id" class="form-label">Kapper</label>
+                    <select class="form-control" id="hairdresser_id" name="hairdresser_id" required>
+                        <option value="">Selecteer een kapper</option>
+                        @foreach($hairdressers as $hairdresser)
+                            <option value="{{ $hairdresser->id }}" {{ ($appointment->hairdresser_id ?? '') == $hairdresser->id ? 'selected' : '' }}>
+                                {{ $hairdresser->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Service: Dropdown for clients, text input for admin -->
                 <div class="mb-3">
                     <label for="service" class="form-label">Behandeling</label>
@@ -44,14 +56,17 @@
                         <label for="appointment_date" class="form-label">Datum</label>
                         <input type="date" class="form-control" id="appointment_date" name="appointment_date" 
                                value="{{ old('appointment_date', $appointment->appointment_date->format('Y-m-d')) }}" 
-                               min="{{ now()->addDay()->format('Y-m-d') }}" required>
+                               min="{{ now()->format('Y-m-d') }}" required>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <label for="appointment_time" class="form-label">Tijd</label>
-                        <select class="form-control" id="appointment_time" name="appointment_time" required>
+                        <select class="form-control @error('appointment_time') is-invalid @enderror" id="appointment_time" name="appointment_time" required>
                             <!-- Will be populated by JavaScript -->
                         </select>
+                        @error('appointment_time')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 
@@ -78,7 +93,10 @@
                 </div>
                 
                 <div class="d-flex justify-content-between">
-                    <a href="{{ route('clientagenda', ['week' => $currentWeek ?? $appointment->appointment_date->startOfWeek()->format('Y-m-d')]) }}" class="btn btn-secondary">Annuleren</a>
+                    @php
+                        $cancelWeek = ($currentWeek && $currentWeek !== 'null') ? $currentWeek : $appointment->appointment_date->startOfWeek()->format('Y-m-d');
+                    @endphp
+                    <a href="{{ route('clientagenda', ['week' => $cancelWeek]) }}" class="btn btn-secondary">Annuleren</a>
                     <button type="submit" class="btn btn-primary">Opslaan</button>
                 </div>
             </form>
@@ -170,10 +188,117 @@
         timeSelect.innerHTML = options || '<option value="">Geen tijden</option>';
     }
 
-    document.getElementById('appointment_date')?.addEventListener('change', updateTimeOptions);
+    // Date validation functions (same as create form)
+    function getFirstBookableDateEdit() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let checkDate = new Date(today);
+        let maxChecks = 14;
+        
+        for (let i = 0; i < maxChecks; i++) {
+            const dayName = checkDate.toLocaleDateString('en-US', { weekday: 'long' });
+            const hours = openingHours[dayName];
+            
+            if (hours && hours[0] !== 'closed') {
+                const closingHour = parseInt(hours[1].split(':')[0]);
+                const cutoffTime = new Date(checkDate);
+                cutoffTime.setHours(closingHour - 12, 0, 0, 0);
+                
+                if (checkDate.toDateString() === today.toDateString()) {
+                    if (new Date() < cutoffTime) {
+                        return checkDate;
+                    }
+                } else {
+                    return checkDate;
+                }
+            }
+            checkDate.setDate(checkDate.getDate() + 1);
+        }
+        return null;
+    }
+
+    function checkDateBookableEdit() {
+        const dateInput = document.getElementById('appointment_date');
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+        const hours = openingHours[dayName];
+        
+        let errorMessage = '';
+        
+        // Past date error (temporary)
+        if (selectedDate < today) {
+            errorMessage = '⚠️ Deze datum ligt in het verleden.';
+            
+            const dateField = document.getElementById('appointment_date');
+            const existingError = document.getElementById('dateBookableErrorEdit');
+            if (existingError) existingError.remove();
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'dateBookableErrorEdit';
+            errorDiv.className = 'alert alert-warning mt-2';
+            errorDiv.innerHTML = errorMessage;
+            dateField.parentNode.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                if (errorDiv) errorDiv.remove();
+            }, 3000);
+            
+            updateTimeOptions();
+            return false;
+        }
+        
+        // Remove any existing error
+        const existingError = document.getElementById('dateBookableErrorEdit');
+        if (existingError) existingError.remove();
+        
+        // Sunday or closed day error (stays until date changes)
+        if (!hours || hours[0] === 'closed') {
+            errorMessage = '⚠️ De salon is gesloten op ' + selectedDate.toLocaleDateString('nl-NL', { weekday: 'long' }) + '.';
+        } 
+        // Today past cutoff error (stays until date changes)
+        else if (selectedDate.toDateString() === today.toDateString()) {
+            const closingHour = parseInt(hours[1].split(':')[0]);
+            const cutoffTime = new Date(selectedDate);
+            cutoffTime.setHours(closingHour - 12, 0, 0, 0);
+            
+            if (new Date() >= cutoffTime) {
+                errorMessage = '⚠️ Het is te laat om vandaag nog een afspraak te wijzigen. Kies een andere datum.';
+            }
+        }
+        
+        if (errorMessage) {
+            const dateField = document.getElementById('appointment_date');
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'dateBookableErrorEdit';
+            errorDiv.className = 'alert alert-warning mt-2';
+            errorDiv.innerHTML = errorMessage;
+            dateField.parentNode.appendChild(errorDiv);
+            // Stays until user changes date
+            updateTimeOptions();
+            return false;
+        }
+        
+        updateTimeOptions();
+        return true;
+    }
+
+    // Event listeners
+    const dateInputEdit = document.getElementById('appointment_date');
+    if (dateInputEdit) {
+        dateInputEdit.addEventListener('change', function() {
+            checkDateBookableEdit();
+        });
+    }
+    
     document.getElementById('service')?.addEventListener('change', updateTimeOptions);
 
-    if (document.getElementById('appointment_date').value) {
+    // Run on page load
+    if (dateInputEdit && dateInputEdit.value) {
+        checkDateBookableEdit();
         updateTimeOptions();
     }
     </script>
