@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AccountgegevensController extends Controller
 {
-         public function show()
+    public function show()
     {
         return view('accountgegevensBekijken');
     }
 
-     public function update(Request $request)
+    public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -35,38 +35,38 @@ class AccountgegevensController extends Controller
 
         $user = Auth::user();
 
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (! Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'Huidig wachtwoord klopt niet']);
         }
 
         $user->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
 
         return back()->with('success', 'Wachtwoord gewijzigd!');
     }
 
     public function destroy(Request $request)
-{
-    $request->validate([
-        'password' => 'required',
-    ]);
+    {
+        $request->validate([
+            'password' => 'required',
+        ]);
 
-    $user = Auth::user();
+        $user = Auth::user();
 
-    // Check password
-    if (!Hash::check($request->password, $user->password)) {
-        return back()->withErrors(['password' => 'Wachtwoord klopt niet']);
+        // Check password
+        if (! Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Wachtwoord klopt niet']);
+        }
+
+        // Logout BEFORE deleting
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login')->with('success', 'Account succesvol verwijderd');
     }
-
-    // Logout BEFORE deleting
-    Auth::logout();
-
-    $user->delete();
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect('/login')->with('success', 'Account succesvol verwijderd');
-}
 }
