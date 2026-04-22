@@ -8,7 +8,6 @@ use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\auth\LogoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientAgendaController;
-use App\Http\Controllers\ClientMakeAppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
@@ -16,6 +15,8 @@ use App\Http\Controllers\auth\PasswordResetController;
 use App\Http\Controllers\auth\PasswordResetFormController;
 use App\Http\Controllers\AccountgegevensController;
 
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // --- PUBLIEKE ROUTES ---
 // Groepeer algemene pagina's bij één controller
@@ -60,9 +61,19 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
 Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda')->middleware(['auth', 'role:klant']);
 
-Route::get('/clientmakeappointment', [ClientMakeAppointmentController::class, 'index'])->name('clientmakeappointment');
-
+// Client agenda routes (beschermd met auth)
 Route::middleware(['auth'])->group(function () {
+    // Hoofd agenda overzicht
+    Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
+    
+    // Afspraak beheer
+    Route::get('/clientagenda/create', [ClientAgendaController::class, 'create'])->name('appointments.create');
+    Route::post('/clientagenda', [ClientAgendaController::class, 'store'])->name('appointments.store');
+    Route::get('/clientagenda/{id}/edit', [ClientAgendaController::class, 'edit'])->name('appointments.edit');
+    Route::put('/clientagenda/{id}', [ClientAgendaController::class, 'update'])->name('appointments.update');
+    Route::delete('/clientagenda/{id}', [ClientAgendaController::class, 'destroy'])->name('appointments.destroy');
+    
+    // Account routes (van main)
     Route::get('/account', [AccountgegevensController::class, 'show'])->name('account.show');
     Route::post('/account/update', [AccountgegevensController::class, 'update'])->name('account.update');
     Route::post('/account/password', [AccountgegevensController::class, 'updatePassword'])->name('account.password');
