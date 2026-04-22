@@ -87,12 +87,23 @@
           <span>{{ Auth::user()->name }}</span>
         </div>
 
-        {{-- <form action="{{ route('logout') }}" method="POST" class="m-0">
+         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+  
+          <li>
+            <a class="dropdown-item" href="/account">Mijn account</a>
+          </li>
+
+          <li><hr class="dropdown-divider"></li>
+
+          <li>
+          <form action="{{ route('logout') }}" method="POST" class="m-0">
           @csrf
-          <button type="submit" class="btn btn-primary fw-bold">
-            Log uit
+          <button type="submit" class="btn btn-primary fw-bold" style="margin-left: 35px;">
+            Log Uit
           </button>
-        </form> --}}
+        </form>
+          </li>
+        </ul>
 
       </div>
 
