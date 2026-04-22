@@ -76,7 +76,8 @@
       <div class="d-flex align-items-center gap-3 btn btn-primary fw-bold">
 
         <!-- User icon + name -->
-        <div class="d-flex align-items-center gap-2 fw-bold">
+        <div class="d-flex align-items-center gap-2 fw-bold dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          
           <svg width="34" height="34" viewBox="0 0 24 24"
                fill="none" stroke="white" stroke-width="1.8">
             <path d="M20 21a8 8 0 0 0-16 0"></path>
@@ -94,6 +95,7 @@
         </form> --}}
 
       </div>
+
     @else
       <a href="{{ route('login') }}" class="btn btn-primary fw-bold">
         Log In
