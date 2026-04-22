@@ -30,7 +30,6 @@ class User extends Authenticatable implements CanResetPassword
         'email',
         'phone',
         'password',
-        'role',
         'specialiteit',
         'photo',
     ];
@@ -56,22 +55,5 @@ class User extends Authenticatable implements CanResetPassword
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    /**
-     * De "booted" methode van de model.
-     */
-    protected static function booted()
-    {
-        static::created(function ($user) {
-            // Controleer of de rol 'klant' bestaat, anders wordt deze aangemaakt
-            // (Dit voorkomt errors als je vergeet te seeden)
-            if (!\Spatie\Permission\Models\Role::where('name', 'klant')->exists()) {
-                \Spatie\Permission\Models\Role::create(['name' => 'klant']);
-            }
-
-            // Wijs de rol 'klant' toe aan de nieuwe gebruiker
-            $user->assignRole('klant');
-        });
     }
 }

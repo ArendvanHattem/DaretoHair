@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Spatie\Permission\Models\Role;
-
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
@@ -13,6 +11,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = User::role('medewerker')->get();
+
         return view('admin.medewerkers.medewerkers', compact('employees'));
     }
 
@@ -24,7 +23,7 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validatie
+
         $validated = $request->validate([
             'email' => 'required|email|unique:users',
             'name' => 'required|string|max:255',
@@ -33,7 +32,6 @@ class EmployeeController extends Controller
             'specialiteit' => 'nullable|string',
         ]);
 
-        // 2. Gebruiker aanmaken
         $employee = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -42,8 +40,6 @@ class EmployeeController extends Controller
             'specialiteit' => $validated['specialiteit'] ?? null,
         ]);
 
-        // 3. De rol 'klant' overschrijven naar 'medewerker'
-        // syncRoles verwijdert 'klant' (die uit de booted methode komt) en zet 'medewerker' neer
         $employee->syncRoles(['medewerker']);
 
         return redirect()->route('admin.medewerkers.index')->with('success', 'Medewerker succesvol aangemaakt.');
@@ -52,6 +48,7 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = User::findOrFail($id);
+
         return view('admin.medewerkers.edit', compact('employee'));
     }
 
@@ -60,14 +57,14 @@ class EmployeeController extends Controller
         $employee = User::findOrFail($id);
 
         $validated = $request->validate([
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'specialiteit' => 'nullable|string',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);

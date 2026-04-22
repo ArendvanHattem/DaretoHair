@@ -244,6 +244,7 @@ a.text-decoration-none {
     color: #8d0000ca !important;
 
 }
+
 /* ------------------------
          Medewerkers
 ------------------------ */
@@ -310,7 +311,7 @@ a.text-decoration-none {
 }
 
 .edit-werknemer-wrapper form {
-    width:70%;
+    width: 70%;
     text-align: center;
 }
 
@@ -324,7 +325,8 @@ a.text-decoration-none {
     font-size: 1rem !important;
 }
 
-.edit-werknemer-wrapper .form-row input, .edit-werknemer-wrapper button {
+.edit-werknemer-wrapper .form-row input,
+.edit-werknemer-wrapper button {
     border: 3px solid black;
 }
 
@@ -354,3 +356,14 @@ a.text-decoration-none {
     color: white;
     text-decoration: none;
 }
+
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item:active,
+.dropdown-item:focus {
+    background-color: #ffffff4d;
+    color: inherit;
+}
+

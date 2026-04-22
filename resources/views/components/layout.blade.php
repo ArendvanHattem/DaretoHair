@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-100">
 <head>
   <style>
       /* Prevent scroll jumps during Turbo navigation */
@@ -30,22 +30,15 @@
   <link href="{{ asset('style.css') }}" rel="stylesheet">
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <nav class="navbar navbar-expand-lg border-bottom border-dark">
   <div class="container-fluid d-flex align-items-center">
 
-    @hasrole('medewerker')
-        {{-- Ingelogd als medewerker: naar dashboard --}}
-        <a class="navbar-brand me-3" href="/dashboard">
-          <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
-        </a>
-    @else
-        {{-- Gast of Klant: naar de homepage --}}
         <a class="navbar-brand me-3" href="/">
           <img src="{{ asset('images/logo.png') }}" alt="Logo" width="79.7" height="79.7">
         </a>
-    @endhasrole
+
 
     <!-- Center: Nav links -->
     <ul class="navbar-nav nav-pills mx-auto d-flex align-items-center gap-2">
@@ -86,12 +79,13 @@
 
     <!-- Right: Auth area -->
     @auth
-      <div class="d-flex align-items-center gap-3">
+      <div class="d-flex align-items-center gap-3 btn btn-primary fw-bold">
 
         <!-- User icon + name -->
-        <div class="d-flex align-items-center gap-2 fw-bold">
+        <div class="d-flex align-items-center gap-2 fw-bold dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          
           <svg width="34" height="34" viewBox="0 0 24 24"
-               fill="none" stroke="black" stroke-width="1.8">
+               fill="none" stroke="white" stroke-width="1.8">
             <path d="M20 21a8 8 0 0 0-16 0"></path>
             <circle cx="12" cy="8" r="4"></circle>
           </svg>
@@ -99,15 +93,32 @@
           <span>{{ Auth::user()->name }}</span>
         </div>
 
-        <!-- Logout -->
-        <form action="{{ route('logout') }}" method="POST" class="m-0">
+         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+  
+          <li>
+            <a class="dropdown-item" href="/account">Mijn account</a>
+          </li>
+
+          @hasrole('medewerker')
+           <li>
+            <a class="dropdown-item" href="/dashboard">Dashboard</a>
+          </li>
+          @endhasrole
+
+          <li><hr class="dropdown-divider"></li>
+
+          <li>
+          <form action="{{ route('logout') }}" method="POST" class="m-0">
           @csrf
-          <button type="submit" class="btn btn-primary fw-bold">
-            Log Out
+          <button type="submit" class="btn btn-primary fw-bold" style="margin-left: 35px;">
+            Uitloggen
           </button>
         </form>
+          </li>
+        </ul>
 
       </div>
+
     @else
       <a href="{{ route('login') }}" class="btn btn-primary fw-bold">
         Log In
@@ -123,8 +134,10 @@
   </div>
 </header>
 
-<main class="container mb-5">
+<main class="container mb-5 flex-grow-1" style="align-content: center;">
+  <div class="w-100">
   {{ $slot }}
+  </div>
 </main>
 
   <x-footer />

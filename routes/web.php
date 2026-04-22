@@ -13,6 +13,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\auth\PasswordResetController;
 use App\Http\Controllers\auth\PasswordResetFormController;
+use App\Http\Controllers\AccountgegevensController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -26,7 +27,6 @@ Route::get('/over-ons', function () {
 });
 Route::get('/prijzen', [PriceController::class, 'index'])->name('prijzen');
 
-// --- AUTHENTICATIE ---
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginShowForm');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
@@ -72,4 +72,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/clientagenda/{id}/edit', [ClientAgendaController::class, 'edit'])->name('appointments.edit');
     Route::put('/clientagenda/{id}', [ClientAgendaController::class, 'update'])->name('appointments.update');
     Route::delete('/clientagenda/{id}', [ClientAgendaController::class, 'destroy'])->name('appointments.destroy');
+    
+    // Account routes (van main)
+    Route::get('/account', [AccountgegevensController::class, 'show'])->name('account.show');
+    Route::post('/account/update', [AccountgegevensController::class, 'update'])->name('account.update');
+    Route::post('/account/password', [AccountgegevensController::class, 'updatePassword'])->name('account.password');
+    Route::delete('/account/delete', [AccountgegevensController::class, 'destroy'])->name('account.delete');
 });

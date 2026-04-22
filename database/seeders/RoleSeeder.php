@@ -16,17 +16,22 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $role_klant = Role::create(['name' => 'klant']);
+        // Maak de rollen
+        Role::firstOrCreate(['name' => 'klant', 'guard_name' => 'web']);
+        $role_medewerker = Role::firstOrCreate(['name' => 'medewerker', 'guard_name' => 'web']);
 
-        $role_medewerker = Role::create(['name' => 'medewerker']);
-        $permission_manage_customers = Permission::create(['name' => 'manage customers']);
-        $permission_manage_employees = Permission::create(['name' => 'manage employees']);
-        $permission_manage_prices = Permission::create(['name' => 'manage prices']);
+        // Maak de permissies
+        $p1 = Permission::firstOrCreate(['name' => 'manage customers', 'guard_name' => 'web']);
+        $p2 = Permission::firstOrCreate(['name' => 'manage employees', 'guard_name' => 'web']);
+        $p3 = Permission::firstOrCreate(['name' => 'manage prices', 'guard_name' => 'web']);
 
-        $role_medewerker->givePermissionTo($permission_manage_customers, $permission_manage_employees, $permission_manage_prices);
+        // Koppel permissies aan rol
+        $role_medewerker->syncPermissions([$p1, $p2, $p3]);
 
+        // Ken de medewerker rol toe aan gebruiker ID 2
         $user = User::find(2);
-
-        $user->assignRole($role_medewerker);
+        if ($user) {
+            $user->assignRole($role_medewerker);
+        }
     }
 }
