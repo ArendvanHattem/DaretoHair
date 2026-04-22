@@ -1,29 +1,45 @@
 <x-layout>
-     <x-slot name="header">
+    <x-slot name="header">
         <h1 class="display-4 fw-bold">Welkom, {{ Auth::user()->name }}</h1>
-        <p class="lead">Proffesionele zorg voor jouw haar, met passie en vakmanschap.</p>
-        <a href="/clientmakeappointment" class="btn btn-primary fw-bold">Maak nieuwe afspraak</a>
-        <a href="/prijzen" class="btn btn-primary fw-bold">Bekijk Prijzen</a>
+        <p class="lead">Beheer hier alle admin functies</p>
     </x-slot>
-    <br>
-    <h1 class="display-5 fw-bold text-center mb-5">Onze Behandelingen</h1>
-    <div class="row justify-content-center">
-  @foreach ($services as $service)
-    <div class="col-12 col-md-6 col-lg-3 mb-3 d-flex">
-      <div class="card price-card text-center w-100">
-        <div class="card-body">
-          <h5 class="card-title fs-4">{{ $service->service }}</h5>
-          <p class="card-text fw-bold fs-2">€{{ number_format($service->amount, 2) }}</p>
-          <p class="card-text fs-6">{{ $service->description }}</p>
-        </div>
-      </div>
-    </div>
-  @endforeach
-</div>
 
-<div class="text-center mt-3">
-  <a href="/prijzen" class="btn btn-auth">
-    Zie de prijslijst voor alle behandelingen
-  </a>
-</div>
+    <br>
+
+    <div class="row justify-content-center gap-4">
+
+        <!-- Card 1 -->
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card text-center w-100 shadow-lg">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fs-4 mb-3 fw-bolder">Medewerkers beheren</h5>
+                    <p class="card-text">Hier kunt u al uw medewerkers beheren</p>
+                    <a href="{{ route('admin.medewerkers.index') }}" class="btn btn-primary fw-bold mt-3">Beheren</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card text-center w-100 shadow-lg">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fs-4 mb-3 fw-bolder">Prijzen beheren</h5>
+                    <p class="card-text">Hier kunt u al uw prijzen beheren</p>
+                    <br>
+                    <a href="{{ route('admin.prijzen.index') }}" class="btn btn-primary fw-bold mt-3">Beheren</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card text-center w-100 shadow-lg">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fs-4 mb-3 fw-bolder">Klanten beheren</h5>
+                    <p class="card-text">Hier kunt u al uw klanten beheren</p>
+                    <br>
+                    <a href="{{ route('admin.klanten.index') }}" class="btn btn-primary fw-bold mt-3">Beheren</a>
+                </div>
+            </div>
+        </div>
+
 </x-layout>
