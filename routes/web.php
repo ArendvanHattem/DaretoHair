@@ -8,13 +8,14 @@ use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\auth\LogoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientAgendaController;
-use App\Http\Controllers\ClientMakeAppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\auth\PasswordResetController;
 use App\Http\Controllers\auth\PasswordResetFormController;
 
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // --- PUBLIEKE ROUTES ---
 // Groepeer algemene pagina's bij één controller
