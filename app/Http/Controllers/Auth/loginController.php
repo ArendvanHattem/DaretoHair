@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -23,12 +22,20 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($validated)) {
+
             $request->session()->regenerate();
-            return redirect()->route('dashboard');
+
+            $user = Auth::user();
+
+            if ($user->hasRole('medewerker')) {
+                return redirect()->route('dashboard');
+            }
+
+            return redirect()->route('home');
         }
 
         throw ValidationException::withMessages([
-            'email' => 'Sorry, je email of wachtwoord is incorrect. Probeer het opnieuw.'
+            'email' => 'Sorry, je email of wachtwoord is incorrect. Probeer het opnieuw.',
         ]);
     }
 }

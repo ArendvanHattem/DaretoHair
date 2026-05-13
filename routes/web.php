@@ -1,26 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PriceController;
-use App\Http\Controllers\TeamController;
+use App\Http\Controllers\AccountgegevensController;
 use App\Http\Controllers\auth\LoginController;
-use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\auth\LogoutController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ClientAgendaController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\auth\PasswordResetController;
 use App\Http\Controllers\auth\PasswordResetFormController;
-use App\Http\Controllers\AccountgegevensController;
-
+use App\Http\Controllers\auth\SignupController;
+use App\Http\Controllers\ClientAgendaController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PriceController;
+use App\Http\Controllers\TeamController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // --- PUBLIEKE ROUTES ---
 // Groepeer algemene pagina's bij één controller
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/team', [TeamController::class, 'index']);
 Route::get('/over-ons', function () {
     return view('over-ons');
@@ -41,7 +40,6 @@ Route::post('/passwordreset', [PasswordResetController::class, 'handle'])->name(
 
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-
 // De publieke route voor iedereen (klanten en medewerkers)
 Route::get('/prijzen', [PriceController::class, 'publicIndex'])->name('prijzen.public');
 
@@ -54,9 +52,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('prijzen', PriceController::class)->middleware('can:manage prices');
 });
 
-
-
-
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'role:medewerker']);
 
 Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda')->middleware(['auth', 'role:klant']);
@@ -65,14 +60,14 @@ Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('cli
 Route::middleware(['auth'])->group(function () {
     // Hoofd agenda overzicht
     Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
-    
+
     // Afspraak beheer
     Route::get('/clientagenda/create', [ClientAgendaController::class, 'create'])->name('appointments.create');
     Route::post('/clientagenda', [ClientAgendaController::class, 'store'])->name('appointments.store');
     Route::get('/clientagenda/{id}/edit', [ClientAgendaController::class, 'edit'])->name('appointments.edit');
     Route::put('/clientagenda/{id}', [ClientAgendaController::class, 'update'])->name('appointments.update');
     Route::delete('/clientagenda/{id}', [ClientAgendaController::class, 'destroy'])->name('appointments.destroy');
-    
+
     // Account routes (van main)
     Route::get('/account', [AccountgegevensController::class, 'show'])->name('account.show');
     Route::post('/account/update', [AccountgegevensController::class, 'update'])->name('account.update');
