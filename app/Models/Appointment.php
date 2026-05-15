@@ -8,7 +8,7 @@ class Appointment extends Model
 {
     protected $fillable = [
         'user_id',  
-        'hairdresser_id',
+        'medewerker_id',
         'service', 
         'appointment_date',
         'duration', // toegevoegd
@@ -25,8 +25,8 @@ class Appointment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function hairdresser()
+    public function medewerker()
     {
-        return $this->belongsTo(Hairdresser::class);
+        return $this->belongsTo(User::class, 'medewerker_id');
     }
 }

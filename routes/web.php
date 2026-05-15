@@ -59,8 +59,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'role:medewerker']);
 
-Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda')->middleware(['auth', 'role:klant']);
-
 // Client agenda routes (beschermd met auth)
 Route::middleware(['auth'])->group(function () {
     // Hoofd agenda overzicht
