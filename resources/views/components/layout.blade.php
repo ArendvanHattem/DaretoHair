@@ -63,7 +63,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="/clientagenda" class="btn btn-primary fw-bold">
+          <a href="/agenda" class="btn btn-primary fw-bold">
             Agenda
           </a>
         </li>
