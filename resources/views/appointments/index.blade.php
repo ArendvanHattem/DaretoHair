@@ -261,8 +261,6 @@
                                                             
                                                             @if($isAdmin || $appt->user_id == auth()->id())
                                                                 <span class="client-name">{{ $appt->user->name ?? 'Klant' }}</span>
-                                                            @else
-                                                                <span class="client-name">Klant</span>
                                                             @endif
                                                             
                                                             @if($appt->duration >= 30)
@@ -316,7 +314,13 @@
                         <div class="modal-body">
                             <div class="detail-row">
                                 <span class="detail-label">Klant:</span>
-                                <span class="detail-value">{{ $appt->user->name ?? 'Onbekend' }}</span>
+                                <span class="detail-value">
+                                    @if($isAdmin || $appt->user_id == auth()->id())
+                                        {{ $appt->user->name ?? 'Onbekend' }}
+                                    @else
+                                        Verborgen
+                                    @endif
+                                </span>
                             </div>
 
                             <div class="detail-row">

@@ -10,15 +10,16 @@ class PriceController extends Controller
 {
     public function publicIndex()
     {
-
-        // fetch all of the prices from the Pricelist
-        $prices = Pricelist::all();
-
-        // save Pricelists based on categories in variables and return to view
-        $knippen_stylen = Pricelist::where('category', 'knippen & stylen')->get();
-        $kleuren = Pricelist::where('category', 'kleuren')->get();
-
-        return view('prijzen', compact('knippen_stylen', 'kleuren'));
+        // Haal alle categorieën op uit de database (uniek)
+        $categorieen = Pricelist::select('category')->distinct()->get();
+        
+        // Maak een array met alle prijzen per categorie
+        $prijzenPerCategorie = [];
+        foreach ($categorieen as $categorie) {
+            $prijzenPerCategorie[$categorie->category] = Pricelist::where('category', $categorie->category)->get();
+        }
+        
+        return view('prijzen', compact('prijzenPerCategorie'));
     }
 
 
