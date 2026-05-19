@@ -198,12 +198,49 @@
                     <thead>
                         <tr>
                             <th style="width: 100px;">Tijd</th>
-                            @foreach($days as $day)
-                                <th class="{{ $day->isToday() ? 'today-highlight' : '' }}">
-                                    {{ $day->format('l') }}<br>
-                                    <small>{{ $day->format('d-m') }}</small>
-                                </th>
-                            @endforeach
+
+                        <!-- Maandag -->
+                        <th class="{{ isset($days[0]) && $days[0]->isToday() ? 'today-highlight' : '' }}">
+                            Maandag<br>
+                            <small>{{ isset($days[0]) ? $days[0]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Dinsdag -->
+                        <th class="{{ isset($days[1]) && $days[1]->isToday() ? 'today-highlight' : '' }}">
+                            Dinsdag<br>
+                            <small>{{ isset($days[1]) ? $days[1]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Woensdag -->
+                        <th class="{{ isset($days[2]) && $days[2]->isToday() ? 'today-highlight' : '' }}">
+                            Woensdag<br>
+                            <small>{{ isset($days[2]) ? $days[2]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Donderdag -->
+                        <th class="{{ isset($days[3]) && $days[3]->isToday() ? 'today-highlight' : '' }}">
+                            Donderdag<br>
+                            <small>{{ isset($days[3]) ? $days[3]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Vrijdag -->
+                        <th class="{{ isset($days[4]) && $days[4]->isToday() ? 'today-highlight' : '' }}">
+                            Vrijdag<br>
+                            <small>{{ isset($days[4]) ? $days[4]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Zaterdag -->
+                        <th class="{{ isset($days[5]) && $days[5]->isToday() ? 'today-highlight' : '' }}">
+                            Zaterdag<br>
+                            <small>{{ isset($days[5]) ? $days[5]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Zondag -->
+                        <th class="{{ isset($days[6]) && $days[6]->isToday() ? 'today-highlight' : '' }}">
+                            Zondag<br>
+                            <small>{{ isset($days[6]) ? $days[6]->format('d-m') : '' }}</small>
+                        </th>
+
                         </tr>
                     </thead>
                     <tbody>
