@@ -95,15 +95,15 @@
                         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
                         z-index: 20;
                     }
-                    .appointment-block.confirmed {
+                    .appointment-block.bevestigd {
                         background-color: #d1e7dd;
                         border-left-color: #198754;
                     }
-                    .appointment-block.pending {
+                    .appointment-block.afwachting {
                         background-color: #fff3cd;
                         border-left-color: #ffc107;
                     }
-                    .appointment-block.cancelled {
+                    .appointment-block.geannuleerd {
                         background-color: #f8d7da;
                         border-left-color: #dc3545;
                         opacity: 0.7;
