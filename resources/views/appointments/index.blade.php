@@ -438,8 +438,7 @@
         event.preventDefault();
         
         // Admin can always edit
-        const isAdmin = {{ auth()->user()->role === 'medewerker' ? 'true' : 'false' }};
-        if (isAdmin) {
+            const isAdmin = {{ auth()->user()->hasRole('medewerker') ? 'true' : 'false' }};        if (isAdmin) {
             window.location.href = '/afspraak-maken/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
             return false;
         }
