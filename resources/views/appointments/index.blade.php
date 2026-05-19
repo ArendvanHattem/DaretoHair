@@ -366,7 +366,7 @@
                             @endif
                         </div>
                         <div class="modal-footer d-flex justify-content-between">
-                            @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'in afwachting'))
+                            @if($isAdmin || ($appt->klant_id == auth()->id() && $appt->status == 'in afwachting'))
                                 <form method="POST" action="{{ route('appointments.destroy', ['id' => $appt->id, 'week' => $weekStart->format('Y-m-d')]) }}" 
                                     style="display: inline;" 
                                     onsubmit="return handleDeleteSubmit(event, {{ $appt->id }}, '{{ $appt->appointment_date }}')">
@@ -379,7 +379,7 @@
                             @endif
                             
                             <div>
-                                @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'in afwachting'))
+                                @if($isAdmin || ($appt->klant_id == auth()->id() && $appt->status == 'in afwachting'))
                                     <a href="#" class="btn btn-success" onclick="return checkEditTime(event, {{ $appt->id }}, '{{ $appt->appointment_date }}', '{{ $appt->status }}')">Bewerken</a>
                                 @endif
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
