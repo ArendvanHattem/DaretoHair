@@ -22,33 +22,29 @@
                     <label for="service" class="form-label">Behandeling</label>
                     <select class="form-control @error('service') is-invalid @enderror" id="service" name="service" required>
                         <option value="">Selecteer een behandeling</option>
-                        <option value="Knippen" {{ old('service') == 'Knippen' ? 'selected' : '' }}>Knippen (standaard 30 min)</option>
-                        <option value="Knippen + Föhnen" {{ old('service') == 'Knippen + Föhnen' ? 'selected' : '' }}>Knippen + Föhnen (standaard 45 min)</option>
-                        <option value="Kleuring" {{ old('service') == 'Kleuring' ? 'selected' : '' }}>Kleuring (standaard 60 min)</option>
-                        <option value="Kleuring + Knippen" {{ old('service') == 'Kleuring + Knippen' ? 'selected' : '' }}>Kleuring + Knippen (standaard 90 min)</option>
-                        <option value="Highlights" {{ old('service') == 'Highlights' ? 'selected' : '' }}>Highlights (standaard 75 min)</option>
-                        <option value="Permanent" {{ old('service') == 'Permanent' ? 'selected' : '' }}>Permanent (standaard 90 min)</option>
-                        <option value="Baard trimmen" {{ old('service') == 'Baard trimmen' ? 'selected' : '' }}>Baard trimmen (standaard 15 min)</option>
-                        <option value="Wassen + Föhnen" {{ old('service') == 'Wassen + Föhnen' ? 'selected' : '' }}>Wassen + Föhnen (standaard 20 min)</option>
-                        <option value="Anders" {{ old('service') == 'Anders' ? 'selected' : '' }}>Anders (laat gewenste duur weten in notities, standaard 15 min)</option>
+                        @foreach($treatments as $treatment)
+                            <option value="{{ $treatment->service }}" {{ old('service') == $treatment->service ? 'selected' : '' }}>
+                                {{ $treatment->service }} (standaard {{ $treatment->duration }} min)
+                            </option>
+                        @endforeach
                     </select>
                     @error('service')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 
-                <!-- Hairdresser selection - moved OUT of script tag -->
+                <!-- medewerker selection - moved OUT of script tag -->
                 <div class="mb-3">
-                    <label for="hairdresser_id" class="form-label">Kapper</label>
-                    <select class="form-control @error('hairdresser_id') is-invalid @enderror" id="hairdresser_id" name="hairdresser_id" required>
+                    <label for="medewerker_id" class="form-label">Kapper</label>
+                    <select class="form-control @error('medewerker_id') is-invalid @enderror" id="medewerker_id" name="medewerker_id" required>
                         <option value="">Selecteer een kapper</option>
-                        @foreach($hairdressers as $hairdresser)
-                            <option value="{{ $hairdresser->id }}" {{ old('hairdresser_id') == $hairdresser->id ? 'selected' : '' }}>
-                                {{ $hairdresser->name }}
+                        @foreach($medewerkers as $medewerker)
+                            <option value="{{ $medewerker->id }}" {{ old('medewerker_id') == $medewerker->id ? 'selected' : '' }}>
+                                {{ $medewerker->name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('hairdresser_id')
+                    @error('medewerker_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -100,17 +96,7 @@
     const openingHours = @json($openingHours);
 
     // Treatment durations in minutes
-    const treatmentDurations = {
-        'Knippen': 30,
-        'Knippen + Föhnen': 45,
-        'Kleuring': 60,
-        'Kleuring + Knippen': 90,
-        'Highlights': 75,
-        'Permanent': 90,
-        'Baard trimmen': 15,
-        'Wassen + Föhnen': 20,
-        'Anders': 15
-    };
+    const treatmentDurations = @json($treatmentDurations);
 
     function generateTimeSlots(selectedDate, selectedTreatment = null) {
         const dayName = selectedDate.toLocaleDateString('nl-NL', { weekday: 'long' });
@@ -138,8 +124,9 @@
         
         let endTotalMinutes = (endHour * 60 + endMinute);
         
-        if (selectedTreatment && treatmentDurations[selectedTreatment]) {
-            endTotalMinutes = endTotalMinutes - treatmentDurations[selectedTreatment];
+        if (selectedTreatment) {
+            const duration = treatmentDurations[selectedTreatment] || 15;
+            endTotalMinutes = endTotalMinutes - duration;
         }
         
         let slots = [];
@@ -201,6 +188,11 @@
     }
 
     function checkDateBookable() {
+        const isAdmin = {{ auth()->user()->role === 'medewerker' ? 'true' : 'false' }};
+        if (isAdmin) {
+            updateTimeOptions();
+            return;
+        }
         const dateInput = document.getElementById('appointment_date');
         const selectedDate = new Date(dateInput.value);
         const today = new Date();
@@ -268,7 +260,7 @@
         
         timeSelect.innerHTML = options;
         
-        if (selectedTreatment === 'Anders') {
+        if (selectedTreatment && selectedTreatment.toLowerCase().includes('anders')) {
             notesField.required = true;
             notesField.placeholder = "Gewenste tijdsduur en behandeling (verplicht)";
             const label = notesField.closest('.mb-3').querySelector('label');

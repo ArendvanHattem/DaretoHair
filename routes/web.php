@@ -24,7 +24,6 @@ Route::get('/team', [TeamController::class, 'index']);
 Route::get('/over-ons', function () {
     return view('over-ons');
 });
-Route::get('/prijzen', [PriceController::class, 'index'])->name('prijzen');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginShowForm');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
@@ -54,19 +53,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'role:medewerker']);
 
-Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda')->middleware(['auth', 'role:klant']);
-
 // Client agenda routes (beschermd met auth)
 Route::middleware(['auth'])->group(function () {
     // Hoofd agenda overzicht
-    Route::get('/clientagenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
+    Route::get('/agenda', [ClientAgendaController::class, 'index'])->name('clientagenda');
 
     // Afspraak beheer
-    Route::get('/clientagenda/create', [ClientAgendaController::class, 'create'])->name('appointments.create');
-    Route::post('/clientagenda', [ClientAgendaController::class, 'store'])->name('appointments.store');
-    Route::get('/clientagenda/{id}/edit', [ClientAgendaController::class, 'edit'])->name('appointments.edit');
-    Route::put('/clientagenda/{id}', [ClientAgendaController::class, 'update'])->name('appointments.update');
-    Route::delete('/clientagenda/{id}', [ClientAgendaController::class, 'destroy'])->name('appointments.destroy');
+    Route::get('/afspraak-maken/create', [ClientAgendaController::class, 'create'])->name('appointments.create');
+    Route::post('/afspraak-maken', [ClientAgendaController::class, 'store'])->name('appointments.store');
+    Route::get('/afspraak-maken/{id}/edit', [ClientAgendaController::class, 'edit'])->name('appointments.edit');
+    Route::put('/afspraak-maken/{id}', [ClientAgendaController::class, 'update'])->name('appointments.update');
+    Route::delete('/afspraak-maken/{id}', [ClientAgendaController::class, 'destroy'])->name('appointments.destroy');
 
     // Account routes (van main)
     Route::get('/account', [AccountgegevensController::class, 'show'])->name('account.show');

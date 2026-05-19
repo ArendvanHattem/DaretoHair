@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('service');
             $table->text('description')->nullable();
             $table->decimal('amount', 8, 2);
+            $table->integer('duration');
             $table->timestamps();
         });
     }

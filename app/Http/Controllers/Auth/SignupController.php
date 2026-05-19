@@ -21,12 +21,14 @@ class SignupController extends Controller
             [
                 'email' => 'required|email|unique:users',
                 'name' => 'required|string|max:255',
-                'phone' => 'required|string|max:20',
+                'phone' => 'required|string|max:20|unique:users',
                 'password' => 'required|string|min:8|confirmed',
 
             ],
             [
                 'email.unique' => 'Er bestaat al een account met dit e-mailadres.',
+                'phone.unique' => 'Er bestaat al een account met dit telefoonnummer.'
+
 
             ]
         );

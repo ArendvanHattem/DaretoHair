@@ -14,18 +14,18 @@
         
         <div style="background-color: #cda4bb;" class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="d-flex gap-2">
-                <a href="?week={{ $previousWeek }}&hairdresser_id={{ $selectedHairdresserId ?? '' }}" class="btn btn-outline-primary">← Vorige week</a>
+                <a href="?week={{ $previousWeek }}&medewerker_id={{ $selectedMedewerkerId ?? '' }}" class="btn btn-outline-primary">← Vorige week</a>
                 
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #cda4bb; border: none; color: white;">
                         @php
-                            $selectedStylist = $hairdressers->firstWhere('id', $selectedHairdresserId);
+                            $selectedStylist = $medewerkers->firstWhere('id', $selectedMedewerkerId);
                         @endphp
                         {{ $selectedStylist ? $selectedStylist->name : 'Kies stylist' }}
                     </button>
                     <ul style="background-color: #cda4bb;" class="dropdown-menu">
-                        @foreach($hairdressers as $hairdresser)
-                            <li style="background-color: #cda4bb;"><a class="dropdown-item" href="?hairdresser_id={{ $hairdresser->id }}&week={{ $weekStart->format('Y-m-d') }}">{{ $hairdresser->name }}</a></li>
+                        @foreach($medewerkers as $medewerker)
+                            <li style="background-color: #cda4bb;"><a class="dropdown-item" href="?medewerker_id={{ $medewerker->id }}&week={{ $weekStart->format('Y-m-d') }}">{{ $medewerker->name }}</a></li>
                         @endforeach
                     </ul>
                 </div>
@@ -35,7 +35,7 @@
             
             <div class="d-flex gap-2">
                 <a href="{{ route('appointments.create') }}" class="btn btn-success me-2">+ Nieuwe afspraak</a>
-                <a href="?week={{ $nextWeek }}&hairdresser_id={{ $selectedHairdresserId ?? '' }}" class="btn btn-outline-primary">Volgende week →</a>
+                <a href="?week={{ $nextWeek }}&medewerker_id={{ $selectedMedewerkerId ?? '' }}" class="btn btn-outline-primary">Volgende week →</a>
             </div>
         </div>
         
@@ -95,15 +95,15 @@
                         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
                         z-index: 20;
                     }
-                    .appointment-block.confirmed {
+                    .appointment-block.bevestigd {
                         background-color: #d1e7dd;
                         border-left-color: #198754;
                     }
-                    .appointment-block.pending {
+                    .appointment-block.afwachting {
                         background-color: #fff3cd;
                         border-left-color: #ffc107;
                     }
-                    .appointment-block.cancelled {
+                    .appointment-block.geannuleerd {
                         background-color: #f8d7da;
                         border-left-color: #dc3545;
                         opacity: 0.7;
@@ -198,12 +198,49 @@
                     <thead>
                         <tr>
                             <th style="width: 100px;">Tijd</th>
-                            @foreach($days as $day)
-                                <th class="{{ $day->isToday() ? 'today-highlight' : '' }}">
-                                    {{ $day->format('l') }}<br>
-                                    <small>{{ $day->format('d-m') }}</small>
-                                </th>
-                            @endforeach
+
+                        <!-- Maandag -->
+                        <th class="{{ isset($days[0]) && $days[0]->isToday() ? 'today-highlight' : '' }}">
+                            Maandag<br>
+                            <small>{{ isset($days[0]) ? $days[0]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Dinsdag -->
+                        <th class="{{ isset($days[1]) && $days[1]->isToday() ? 'today-highlight' : '' }}">
+                            Dinsdag<br>
+                            <small>{{ isset($days[1]) ? $days[1]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Woensdag -->
+                        <th class="{{ isset($days[2]) && $days[2]->isToday() ? 'today-highlight' : '' }}">
+                            Woensdag<br>
+                            <small>{{ isset($days[2]) ? $days[2]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Donderdag -->
+                        <th class="{{ isset($days[3]) && $days[3]->isToday() ? 'today-highlight' : '' }}">
+                            Donderdag<br>
+                            <small>{{ isset($days[3]) ? $days[3]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Vrijdag -->
+                        <th class="{{ isset($days[4]) && $days[4]->isToday() ? 'today-highlight' : '' }}">
+                            Vrijdag<br>
+                            <small>{{ isset($days[4]) ? $days[4]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Zaterdag -->
+                        <th class="{{ isset($days[5]) && $days[5]->isToday() ? 'today-highlight' : '' }}">
+                            Zaterdag<br>
+                            <small>{{ isset($days[5]) ? $days[5]->format('d-m') : '' }}</small>
+                        </th>
+
+                        <!-- Zondag -->
+                        <th class="{{ isset($days[6]) && $days[6]->isToday() ? 'today-highlight' : '' }}">
+                            Zondag<br>
+                            <small>{{ isset($days[6]) ? $days[6]->format('d-m') : '' }}</small>
+                        </th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -253,18 +290,14 @@
 
                                                         <div class="appointment-block {{ $appt->status }}"
                                                             style="position: absolute; top: 0; left: 2px; right: 2px; height: {{ $height }}px; z-index: 10;"
-                                                            @if($isAdmin || $appt->user_id == auth()->id())
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#appointmentModal{{ $appt->id }}"
-                                                            @endif
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#appointmentModal{{ $appt->id }}"
                                                             title="{{ $apptStart->format('H:i') }} - {{ $apptEnd->format('H:i') }}">
                                                             
-                                                            <span class="hairdresser-name" style="font-size: 0.55rem; opacity: 0.7;">{{ $appt->hairdresser->name ?? '' }}</span>
+                                                            <span class="medewerker-name" style="font-size: 0.55rem; opacity: 0.7;">{{ $appt->medewerker->name ?? '' }}</span>
                                                             
                                                             @if($isAdmin || $appt->user_id == auth()->id())
                                                                 <span class="client-name">{{ $appt->user->name ?? 'Klant' }}</span>
-                                                            @else
-                                                                <span class="client-name">Klant</span>
                                                             @endif
                                                             
                                                             @if($appt->duration >= 30)
@@ -302,92 +335,96 @@
     <!-- Modals -->
     @foreach($appointmentsByDay as $dayAppointments)
         @foreach($dayAppointments as $appt)
-            @if($isAdmin || $appt->user_id == auth()->id())
-                @php
-                    $apptStart = $appt->appointment_date;
-                    $apptEnd = $apptStart->copy()->addMinutes($appt->duration);
-                @endphp
-                <div class="modal fade" id="appointmentModal{{ $appt->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $appt->id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title" id="modalLabel{{ $appt->id }}">
-                                    <i class="bi bi-calendar-check me-2"></i>Afspraak details
-                                </h6>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sluiten"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="detail-row">
-                                    <span class="detail-label">Klant:</span>
-                                    <span class="detail-value">{{ $appt->user->name ?? 'Onbekend' }}</span>
-                                </div>
-
-                                <div class="detail-row">
-                                    <span class="detail-label">Kapper:</span>
-                                    <span class="detail-value">{{ $appt->hairdresser->name ?? 'Nog niet toegewezen' }}</span>
-                                </div>
-                                
-                                <div class="detail-row">
-                                    <span class="detail-label">Service:</span>
-                                    <span class="detail-value">{{ $appt->service }}</span>
-                                </div>
-                                
-                                <div class="detail-row">
-                                    <span class="detail-label">Datum:</span>
-                                    <span class="detail-value">{{ $apptStart->format('l d-m-Y') }}</span>
-                                </div>
-                                
-                                <div class="detail-row">
-                                    <span class="detail-label">Tijd:</span>
-                                    <span class="detail-value">{{ $apptStart->format('H:i') }} - {{ $apptEnd->format('H:i') }} ({{ $appt->duration }} min)</span>
-                                </div>
-                                
-                                <div class="detail-row">
-                                    <span class="detail-label">Status:</span>
-                                    <span class="detail-value">
-                                        <span class="status-badge" style="background-color: {{ 
-                                            $appt->status === 'confirmed' ? '#d1e7dd' : 
-                                            ($appt->status === 'pending' ? '#fff3cd' : '#f8d7da') 
-                                        }}; color: {{ 
-                                            $appt->status === 'confirmed' ? '#0a3622' : 
-                                            ($appt->status === 'pending' ? '#856404' : '#58151c') 
-                                        }};">
-                                            {{ ucfirst($appt->status) }}
-                                        </span>
-                                    </span>
-                                </div>
-                                
-                                @if($appt->notes)
-                                    <div class="detail-row">
-                                        <span class="detail-label">Notities:</span>
-                                        <span class="detail-value">{{ $appt->notes }}</span>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="modal-footer d-flex justify-content-between">
-                                @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'pending'))
-                                    <form method="POST" action="{{ route('appointments.destroy', ['id' => $appt->id, 'week' => $weekStart->format('Y-m-d')]) }}" 
-                                        style="display: inline;" 
-                                        onsubmit="return handleDeleteSubmit(event, {{ $appt->id }}, '{{ $appt->appointment_date }}')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger" id="deleteBtn{{ $appt->id }}">Verwijderen</button>
-                                    </form>
-                                @else
-                                    <div></div>
-                                @endif
-                                
-                                <div>
-                                    @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'pending'))
-                                        <a href="#" class="btn btn-success" onclick="return checkEditTime(event, {{ $appt->id }}, '{{ $appt->appointment_date }}', '{{ $appt->status }}')">Bewerken</a>
+            @php
+                $apptStart = $appt->appointment_date;
+                $apptEnd = $apptStart->copy()->addMinutes($appt->duration);
+            @endphp
+            <div class="modal fade" id="appointmentModal{{ $appt->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $appt->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="modalLabel{{ $appt->id }}">
+                                <i class="bi bi-calendar-check me-2"></i>Afspraak details
+                            </h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sluiten"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="detail-row">
+                                <span class="detail-label">Klant:</span>
+                                <span class="detail-value">
+                                    @if($isAdmin || $appt->klant_id == auth()->id())
+                                        {{ $appt->klant->name ?? 'Onbekend' }}
+                                    @else
+                                        Verborgen
                                     @endif
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                                </span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="detail-label">Kapper:</span>
+                                <span class="detail-value">{{ $appt->medewerker->name ?? 'Nog niet toegewezen' }}</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Service:</span>
+                                <span class="detail-value">{{ $appt->service }}</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Datum:</span>
+                                <span class="detail-value">{{ $apptStart->format('l d-m-Y') }}</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Tijd:</span>
+                                <span class="detail-value">{{ $apptStart->format('H:i') }} - {{ $apptEnd->format('H:i') }} ({{ $appt->duration }} min)</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">
+                                    <span class="status-badge" style="background-color: {{ 
+                                        $appt->status === 'bevestigd' ? '#d1e7dd' : 
+                                        ($appt->status === 'in afwachting' ? '#fff3cd' : '#f8d7da') 
+                                    }}; color: {{ 
+                                        $appt->status === 'bevestigd' ? '#0a3622' : 
+                                        ($appt->status === 'in afwachting' ? '#856404' : '#58151c') 
+                                    }};">
+                                        {{ $appt->status === 'geannuleerd' ? 'Geannuleerd' : ucfirst($appt->status) }}
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            @if($appt->notes)
+                                <div class="detail-row">
+                                    <span class="detail-label">Notities:</span>
+                                    <span class="detail-value">{{ $appt->notes }}</span>
                                 </div>
+                            @endif
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between">
+                            @if($isAdmin || ($appt->klant_id == auth()->id() && $appt->status == 'in afwachting'))
+                                <form method="POST" action="{{ route('appointments.destroy', ['id' => $appt->id, 'week' => $weekStart->format('Y-m-d')]) }}" 
+                                    style="display: inline;" 
+                                    onsubmit="return handleDeleteSubmit(event, {{ $appt->id }}, '{{ $appt->appointment_date }}')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" id="deleteBtn{{ $appt->id }}">Verwijderen</button>
+                                </form>
+                            @else
+                                <div></div>
+                            @endif
+                            
+                            <div>
+                                @if($isAdmin || ($appt->klant_id == auth()->id() && $appt->status == 'in afwachting'))
+                                    <a href="#" class="btn btn-success" onclick="return checkEditTime(event, {{ $appt->id }}, '{{ $appt->appointment_date }}', '{{ $appt->status }}')">Bewerken</a>
+                                @endif
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            @endif
+            </div>
         @endforeach
     @endforeach
     
@@ -422,6 +459,11 @@
     }
 
     function handleDeleteSubmit(event, appointmentId, appointmentDate) {
+        const isAdmin = {{ auth()->user()->hasRole('medewerker') ? 'true' : 'false' }};
+        if (isAdmin) {
+            return confirm('Weet je zeker dat je deze afspraak wilt verwijderen?');
+        }
+        
         if (isWithin12Hours(appointmentDate)) {
             event.preventDefault();
             return showContactMessage('verwijderd');
@@ -432,7 +474,13 @@
     function checkEditTime(event, appointmentId, appointmentDate, status) {
         event.preventDefault();
         
-        if (status !== 'pending') {
+        // Admin can always edit
+            const isAdmin = {{ auth()->user()->hasRole('medewerker') ? 'true' : 'false' }};        if (isAdmin) {
+            window.location.href = '/afspraak-maken/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
+            return false;
+        }
+        
+        if (status !== 'in afwachting') {
             alert('Deze afspraak is al bevestigd of geannuleerd en kan niet meer worden gewijzigd.');
             return false;
         }
@@ -441,12 +489,12 @@
             return showContactMessage('verplaatst');
         }
         
-        window.location.href = '/clientagenda/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
+        window.location.href = '/afspraak-maken/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
         return false;
     }
     function deleteAppointment(id) {
         if (confirm('Weet je zeker dat je deze afspraak wilt verwijderen?')) {
-            fetch('/clientagenda/' + id, {
+            fetch('/afspraak-maken/' + id, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

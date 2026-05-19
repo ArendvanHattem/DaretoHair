@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\pricelist;
+use App\Models\Pricelist; // Let op de hoofdletter P
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 
 class PricelistSeeder extends Seeder
 {
@@ -14,19 +13,21 @@ class PricelistSeeder extends Seeder
      */
     public function run(): void
     {
-        // Specifieke diensten toevoegen
+        // Specifieke diensten toevoegen inclusief de duration (in minuten)
         Pricelist::create([
             'service' => 'Wassen & Knippen (Heren)',
             'description' => 'Inclusief hoofdhuidmassage en styling.',
             'amount' => 28.50,
-            'category' => 'knippen & stylen',
+            'category' => 'Knippen & stylen',
+            'duration' => 30,
         ]);
 
         Pricelist::create([
             'service' => 'Wassen, Knippen & Föhnen (Dames)',
             'description' => 'Complete behandeling voor dames.',
             'amount' => 45.00,
-            'category' => 'knippen & stylen',
+            'category' => 'Knippen & stylen',
+            'duration' => 45,
         ]);
 
         Pricelist::create([
@@ -34,6 +35,7 @@ class PricelistSeeder extends Seeder
             'description' => 'Permanente kleuring van het hele haar.',
             'amount' => 65.00,
             'category' => 'Kleuren',
+            'duration' => 90,
         ]);
     }
 }
