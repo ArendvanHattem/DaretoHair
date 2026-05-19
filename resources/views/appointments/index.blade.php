@@ -347,13 +347,13 @@
                                 <span class="detail-label">Status:</span>
                                 <span class="detail-value">
                                     <span class="status-badge" style="background-color: {{ 
-                                        $appt->status === 'confirmed' ? '#d1e7dd' : 
-                                        ($appt->status === 'pending' ? '#fff3cd' : '#f8d7da') 
+                                        $appt->status === 'bevestigd' ? '#d1e7dd' : 
+                                        ($appt->status === 'in afwachting' ? '#fff3cd' : '#f8d7da') 
                                     }}; color: {{ 
-                                        $appt->status === 'confirmed' ? '#0a3622' : 
-                                        ($appt->status === 'pending' ? '#856404' : '#58151c') 
+                                        $appt->status === 'bevestigd' ? '#0a3622' : 
+                                        ($appt->status === 'in afwachting' ? '#856404' : '#58151c') 
                                     }};">
-                                        {{ $appt->status === 'cancelled' ? 'Denied' : ucfirst($appt->status) }}
+                                        {{ $appt->status === 'geannuleerd' ? 'Geannuleerd' : ucfirst($appt->status) }}
                                     </span>
                                 </span>
                             </div>
@@ -366,7 +366,7 @@
                             @endif
                         </div>
                         <div class="modal-footer d-flex justify-content-between">
-                            @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'pending'))
+                            @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'in afwachting'))
                                 <form method="POST" action="{{ route('appointments.destroy', ['id' => $appt->id, 'week' => $weekStart->format('Y-m-d')]) }}" 
                                     style="display: inline;" 
                                     onsubmit="return handleDeleteSubmit(event, {{ $appt->id }}, '{{ $appt->appointment_date }}')">
@@ -379,7 +379,7 @@
                             @endif
                             
                             <div>
-                                @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'pending'))
+                                @if($isAdmin || ($appt->user_id == auth()->id() && $appt->status == 'in afwachting'))
                                     <a href="#" class="btn btn-success" onclick="return checkEditTime(event, {{ $appt->id }}, '{{ $appt->appointment_date }}', '{{ $appt->status }}')">Bewerken</a>
                                 @endif
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
@@ -440,11 +440,11 @@
         // Admin can always edit
         const isAdmin = {{ auth()->user()->role === 'medewerker' ? 'true' : 'false' }};
         if (isAdmin) {
-            window.location.href = '/clientagenda/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
+            window.location.href = '/afspraak-maken/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
             return false;
         }
         
-        if (status !== 'pending') {
+        if (status !== 'in afwachting') {
             alert('Deze afspraak is al bevestigd of geannuleerd en kan niet meer worden gewijzigd.');
             return false;
         }
@@ -453,12 +453,12 @@
             return showContactMessage('verplaatst');
         }
         
-        window.location.href = '/clientagenda/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
+        window.location.href = '/afspraak-maken/' + appointmentId + '/edit?week=' + new URLSearchParams(window.location.search).get('week');
         return false;
     }
     function deleteAppointment(id) {
         if (confirm('Weet je zeker dat je deze afspraak wilt verwijderen?')) {
-            fetch('/clientagenda/' + id, {
+            fetch('/afspraak-maken/' + id, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

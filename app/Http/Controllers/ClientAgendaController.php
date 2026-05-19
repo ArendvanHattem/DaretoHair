@@ -11,7 +11,9 @@ use App\Models\Pricelist;
 class ClientAgendaController extends Controller
 {
     public function index(Request $request)
+
     {
+
         $isAdmin = auth()->user()->hasRole('medewerker');
         $selectedMedewerkerId = $request->input('medewerker_id');
 
@@ -28,7 +30,8 @@ class ClientAgendaController extends Controller
             $days->push($weekStart->copy()->addDays($i));
         }
 
-        $appointmentsQuery = Appointment::with($isAdmin ? 'user' : [])
+        // AANGEPAST: 'user' veranderd naar 'klant' vanwege de nieuwe relatienaam
+        $appointmentsQuery = Appointment::with($isAdmin ? 'klant' : [])
             ->whereBetween('appointment_date', [
                 $weekStart,
                 $weekStart->copy()->addWeek()
@@ -109,7 +112,7 @@ class ClientAgendaController extends Controller
             }
 
             $existingAppointment = Appointment::where('medewerker_id', $request->medewerker_id)
-                ->whereIn('status', ['pending', 'confirmed'])
+                ->whereIn('status', ['in afwachting', 'bevestigd'])
                 ->where(function ($query) use ($appointmentDateTime, $appointmentEnd) {
                     $query->where('appointment_date', '<', $appointmentEnd)
                         ->whereRaw('DATE_ADD(appointment_date, INTERVAL duration MINUTE) > ?', [$appointmentDateTime]);
@@ -130,14 +133,15 @@ class ClientAgendaController extends Controller
             'notes' => str_contains(strtolower($request->service), 'anders') ? 'required|string|min:5' : 'nullable|string',
         ]);
 
+        // AANGEPAST: 'user_id' is hier veranderd naar 'klant_id'
         Appointment::create([
-            'user_id' => auth()->user()->id,
+            'klant_id' => auth()->user()->id,
             'medewerker_id' => $request->medewerker_id,
             'service' => $validated['service'],
             'appointment_date' => $appointmentDateTime,
             'duration' => $duration,
             'notes' => $validated['notes'] ?? null,
-            'status' => 'pending',
+            'status' => 'in afwachting',
         ]);
 
         return redirect()->route('clientagenda')
@@ -146,13 +150,11 @@ class ClientAgendaController extends Controller
 
     public function edit($id)
     {
+
         $appointment = Appointment::findOrFail($id);
         $user = auth()->user();
-
-        // Gecorrigeerde role check via Spatie
         $isAdmin = $user->hasRole('medewerker');
 
-        // FIX: Gebruik ->copy() om te voorkomen dat de echte datum van de afspraak overschreven wordt
         $appointmentDate = Carbon::parse($appointment->appointment_date);
         $currentWeek = request()->input('week', $appointmentDate->copy()->startOfWeek()->format('Y-m-d'));
 
@@ -174,17 +176,17 @@ class ClientAgendaController extends Controller
         $treatments = Pricelist::all();
         $treatmentDurations = $treatments->pluck('duration', 'service')->toArray();
 
-        // Admin krijgt direct toegang
         if ($isAdmin) {
             return view('appointments.edit', compact('appointment', 'currentWeek', 'openingHours', 'medewerkers', 'isAdmin', 'treatmentDurations', 'treatments'));
         }
 
-        // Restricties voor klanten
-        if ($appointment->user_id !== $user->id) {
+        // AANGEPAST: 'user_id' veranderd naar 'klant_id'
+        if ($appointment->klant_id !== $user->id) {
             return redirect()->route('clientagenda')->with('error', 'Je kunt alleen je eigen afspraken bewerken.');
         }
 
-        if ($appointment->status !== 'pending') {
+
+        if ($appointment->status !== 'in afwachting') {
             return redirect()->route('clientagenda')->with('error', 'Deze afspraak is al bevestigd of geannuleerd en kan niet meer worden gewijzigd.');
         }
 
@@ -199,19 +201,19 @@ class ClientAgendaController extends Controller
     {
         $appointment = Appointment::findOrFail($id);
         $user = auth()->user();
-        $isAdmin = $user->hasRole('medewerker'); // Gecorrigeerde check
+        $isAdmin = $user->hasRole('medewerker');
 
         $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
         $duration = (int) $request->duration;
         $appointmentEnd = $appointmentDateTime->copy()->addMinutes($duration);
 
-        // Als geen admin, voer klantrestricties uit
         if (!$isAdmin) {
-            if ($appointment->user_id !== $user->id) {
+            // AANGEPAST: 'user_id' veranderd naar 'klant_id'
+            if ($appointment->klant_id !== $user->id) {
                 return redirect()->route('clientagenda')->with('error', 'Je kunt alleen je eigen afspraken bewerken.');
             }
 
-            if ($appointment->status !== 'pending') {
+            if ($appointment->status !== 'in afwachting') {
                 return redirect()->route('clientagenda')->with('error', 'Deze afspraak is al bevestigd of geannuleerd.');
             }
 
@@ -223,7 +225,7 @@ class ClientAgendaController extends Controller
 
             $existingAppointment = Appointment::where('medewerker_id', $request->medewerker_id)
                 ->where('id', '!=', $id)
-                ->whereIn('status', ['pending', 'confirmed'])
+                ->whereIn('status', ['in afwachting', 'bevestigd'])
                 ->where(function ($query) use ($appointmentDateTime, $appointmentEnd) {
                     $query->where('appointment_date', '<', $appointmentEnd)
                         ->whereRaw('DATE_ADD(appointment_date, INTERVAL duration MINUTE) > ?', [$appointmentDateTime]);
@@ -243,7 +245,7 @@ class ClientAgendaController extends Controller
             'appointment_time' => 'required',
             'duration' => 'required|integer|min:5|max:240',
             'notes' => str_contains(strtolower($request->service), 'anders') ? 'required|string|min:1' : 'nullable|string',
-            'status' => 'required|in:pending,confirmed,cancelled'
+            'status' => 'required|in:in afwachting,bevestigd,geannuleerd'
         ]);
 
         $roundedDuration = max(5, ceil($validated['duration'] / 5) * 5);
@@ -268,7 +270,6 @@ class ClientAgendaController extends Controller
         $appointment = Appointment::findOrFail($id);
         $user = auth()->user();
 
-        // Gecorrigeerde check
         if ($user->hasRole('medewerker')) {
             $appointment->delete();
             $currentWeek = $request->input('week', now()->startOfWeek()->format('Y-m-d'));
@@ -276,11 +277,12 @@ class ClientAgendaController extends Controller
                 ->with('success', 'Afspraak succesvol verwijderd!');
         }
 
-        if ($appointment->user_id !== $user->id) {
+        // AANGEPAST: 'user_id' veranderd naar 'klant_id'
+        if ($appointment->klant_id !== $user->id) {
             return redirect()->route('clientagenda')->with('error', 'Je kunt alleen je eigen afspraken verwijderen.');
         }
 
-        if ($appointment->status !== 'pending') {
+        if ($appointment->status !== 'in afwachting') {
             return redirect()->route('clientagenda')->with('error', 'Deze afspraak is al bevestigd of geannuleerd.');
         }
 

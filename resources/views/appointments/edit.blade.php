@@ -71,18 +71,18 @@
                 <input type="hidden" name="duration" id="duration" value="{{ $appointment->duration }}">
                 
                 <!-- Status: Only admin can see/change -->
-                @if($isAdmin)
+                @role('medewerker')
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
                         <select class="form-control" id="status" name="status" required>
-                            <option value="pending" {{ $appointment->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                            <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Denied</option>
+                            <option value="in afwachting" {{ $appointment->status == 'in afwachting' ? 'selected' : '' }}>In afwachting</option>
+                            <option value="bevestigd" {{ $appointment->status == 'bevestigd' ? 'selected' : '' }}>Bevestigd</option>
+                            <option value="geannuleerd" {{ $appointment->status == 'geannuleerd' ? 'selected' : '' }}>Geannuleeerd</option>
                         </select>
                     </div>
-                @else
+               @else
                     <input type="hidden" name="status" value="{{ $appointment->status }}">
-                @endif
+                @endrole
                 
                 <div class="mb-3">
                     <label for="notes" class="form-label">Notities</label>
