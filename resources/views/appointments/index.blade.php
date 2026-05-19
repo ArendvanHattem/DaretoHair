@@ -315,8 +315,8 @@
                             <div class="detail-row">
                                 <span class="detail-label">Klant:</span>
                                 <span class="detail-value">
-                                    @if($isAdmin || $appt->user_id == auth()->id())
-                                        {{ $appt->user->name ?? 'Onbekend' }}
+                                    @if($isAdmin || $appt->klant_id == auth()->id())
+                                        {{ $appt->klant->name ?? 'Onbekend' }}
                                     @else
                                         Verborgen
                                     @endif
@@ -422,7 +422,7 @@
     }
 
     function handleDeleteSubmit(event, appointmentId, appointmentDate) {
-        const isAdmin = {{ auth()->user()->role === 'medewerker' ? 'true' : 'false' }};
+        const isAdmin = {{ auth()->user()->hasRole('medewerker') ? 'true' : 'false' }};
         if (isAdmin) {
             return confirm('Weet je zeker dat je deze afspraak wilt verwijderen?');
         }
