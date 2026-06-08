@@ -29,10 +29,11 @@ RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
 # Run Laravel setup script
 RUN /scripts/00-laravel-deploy.sh
 
-# Create simple Supervisor config
+# Create Supervisor config with correct command paths
 RUN echo '[supervisord]\nnodaemon=true\n' > /etc/supervisord.conf && \
     echo '[program:php-fpm]\ncommand=php-fpm -F\n' >> /etc/supervisord.conf && \
-    echo '[program:nginx]\ncommand=nginx -g "daemon off;"\n' >> /etc/supervisord.conf
+    echo '[program:nginx]\ncommand=nginx -g "daemon off;"\n' >> /etc/supervisord.conf && \
+    cat /etc/supervisord.conf
 
 EXPOSE 80
 
