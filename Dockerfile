@@ -1,8 +1,8 @@
 FROM php:8.4-fpm-alpine
 
-# Install nginx, supervisor, required PHP extensions, and oniguruma dependency
+# Install nginx, supervisor, and required system packages
 RUN apk add --no-cache nginx supervisor curl zip unzip git oniguruma-dev \
-    && docker-php-ext-install pdo_mysql mbstring session tokenizer
+    && docker-php-ext-install pdo_mysql mbstring
 
 # Copy composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -29,7 +29,7 @@ RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
 # Run Laravel setup script
 RUN /scripts/00-laravel-deploy.sh
 
-# Create Supervisor config
+# Create simple Supervisor config
 RUN echo '[supervisord]\nnodaemon=true\n' > /etc/supervisord.conf && \
     echo '[program:php-fpm]\ncommand=php-fpm -F\n' >> /etc/supervisord.conf && \
     echo '[program:nginx]\ncommand=nginx -g "daemon off;"\n' >> /etc/supervisord.conf
