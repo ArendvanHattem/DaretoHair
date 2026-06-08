@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-echo "Running composer"
-composer install --no-dev --working-dir=/var/www/html
+set -e  # Stop on error
+export COMPOSER_MEMORY_LIMIT=-1
+
+echo "Running composer install (if not already done)..."
+cd /var/www/html
 
 echo "Generating application key..."
-php artisan key:generate --show
+php artisan key:generate --force
 
 echo "Caching config..."
 php artisan config:cache
