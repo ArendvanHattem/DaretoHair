@@ -12,4 +12,4 @@ chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Start supervisor
-exec /usr/bin/supervisord -c /etc/supervisord.conf
+exec /usr/bin/supervisord -n -c /etc/supervisord.conf
