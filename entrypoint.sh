@@ -3,22 +3,23 @@ set -e
 
 echo ">>> Running entrypoint.sh..."
 
-# Fix permissions - try multiple approaches
+# Fix permissions
 echo ">>> Fixing storage permissions..."
-
-# Try with www-data user first, then fallback to 33, then 1000
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || \
-chown -R 33:33 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || \
-chown -R 1000:1000 /var/www/html/storage /var/www/html/bootstrap/cache
-
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 777 /var/www/html/storage/logs
 
-# Create and set permissions for laravel.log specifically
-touch /var/www/html/storage/logs/laravel.log
-chmod 666 /var/www/html/storage/logs/laravel.log
+# Hardcode the document root for nginx
+echo ">>> Setting DOCUMENT_ROOT for nginx..."
+export DOCUMENT_ROOT=/var/www/html/public
 
-# Also set permissions on the entire storage directory
-chmod -R 777 /var/www/html/storage
+# Ensure the index.php file exists
+if [ -f /var/www/html/public/index.php ]; then
+    echo ">>> index.php found at /var/www/html/public/index.php"
+else
+    echo ">>> ERROR: index.php not found!"
+    ls -la /var/www/html/public/
+fi
 
 echo ">>> Starting Supervisor..."
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf

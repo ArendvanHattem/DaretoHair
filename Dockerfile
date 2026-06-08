@@ -18,4 +18,4 @@ ENV APP_DEBUG false
 
 # Override the base image's CMD with our entrypoint
 ENTRYPOINT []
-CMD ["/entrypoint.sh"]
+CMD ["/bin/bash", "/entrypoint.sh"]
