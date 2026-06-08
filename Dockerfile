@@ -2,25 +2,23 @@ FROM tangramor/nginx-php8-fpm:php8.4.5_node23.11.0
 
 COPY . /var/www/html
 COPY scripts/* /scripts/
+COPY entrypoint.sh /entrypoint.sh
 
-# Fix permissions for Laravel storage and bootstrap cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Make scripts executable
+RUN chmod +x /scripts/*.sh && chmod +x /entrypoint.sh
 
-RUN chmod +x /scripts/*.sh
+# Fix Composer permissions and run install
+RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
 
-# Environment variables
+# Run the deploy script (migrations, etc.)
+RUN /scripts/00-laravel-deploy.sh
+
+# Environment Variables
 ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
 ENV RUN_SCRIPTS 1
 ENV APP_ENV production
 ENV APP_DEBUG false
 
-# Run Composer and deploy script during build
-RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
-RUN /scripts/00-laravel-deploy.sh
-
-# Copy nginx config if needed
-COPY conf/nginx-site.conf /etc/nginx/conf.d/default.conf
-
-CMD ["/start.sh"]
+# Use our custom entrypoint to fix permissions at runtime
+ENTRYPOINT ["/entrypoint.sh"]
