@@ -4,7 +4,10 @@ COPY . /var/www/html
 COPY scripts/* /scripts/
 COPY entrypoint.sh /entrypoint.sh
 COPY conf/nginx-site.conf /etc/nginx/conf.d/default.conf
-COPY conf/php-fpm.conf /etc/php/8.4/fpm/conf.d/99-temp-dir.override.conf
+
+# Create PHP temp directory config in the correct location
+RUN echo 'php_admin_value[sys_temp_dir] = /tmp/php' > /usr/local/etc/php-fpm.d/zz-temp-dir.conf
+RUN echo 'env[TMPDIR] = /tmp/php' >> /usr/local/etc/php-fpm.d/zz-temp-dir.conf
 
 RUN chmod +x /scripts/*.sh && chmod +x /entrypoint.sh
 
@@ -18,6 +21,5 @@ ENV APP_ENV production
 ENV APP_DEBUG false
 ENV TMPDIR=/tmp/php
 
-# Override the base image's CMD with our entrypoint
 ENTRYPOINT []
 CMD ["/bin/bash", "/entrypoint.sh"]

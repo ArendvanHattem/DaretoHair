@@ -3,11 +3,13 @@ set -e
 
 echo ">>> Running entrypoint.sh..."
 
-# Create PHP temp directory with correct permissions
+# Create PHP temp directory
 echo ">>> Creating PHP temp directory..."
 mkdir -p /tmp/php
-chmod 777 /tmp/php
-chown www-data:www-data /tmp/php
+chmod 1777 /tmp/php
+
+# Set for current process
+export TMPDIR=/tmp/php
 
 # Fix Laravel storage permissions
 echo ">>> Fixing storage permissions..."
@@ -17,7 +19,7 @@ chmod -R 777 /var/www/html/storage/logs
 
 # Verify index.php exists
 if [ -f /var/www/html/public/index.php ]; then
-    echo ">>> index.php found at /var/www/html/public/index.php"
+    echo ">>> index.php found"
 else
     echo ">>> ERROR: index.php not found!"
     ls -la /var/www/html/public/
