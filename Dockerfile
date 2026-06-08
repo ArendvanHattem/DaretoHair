@@ -1,7 +1,7 @@
 FROM php:8.4-fpm-alpine
 
-# Install nginx, supervisor, and required system packages
-RUN apk add --no-cache nginx supervisor curl zip unzip git oniguruma-dev \
+# Install nginx, supervisor, bash, and required system packages
+RUN apk add --no-cache nginx supervisor curl zip unzip git oniguruma-dev bash \
     && docker-php-ext-install pdo_mysql mbstring
 
 # Copy composer
