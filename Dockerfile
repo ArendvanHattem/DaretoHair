@@ -4,6 +4,7 @@ COPY . /var/www/html
 COPY scripts/* /scripts/
 COPY entrypoint.sh /entrypoint.sh
 COPY conf/nginx-site.conf /etc/nginx/conf.d/default.conf
+COPY conf/php-fpm.conf /etc/php/8.4/fpm/conf.d/99-temp-dir.override.conf
 
 RUN chmod +x /scripts/*.sh && chmod +x /entrypoint.sh
 
