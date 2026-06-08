@@ -5,21 +5,17 @@ COPY scripts/* /scripts/
 COPY entrypoint.sh /entrypoint.sh
 COPY conf/nginx-site.conf /etc/nginx/conf.d/default.conf
 
-# Make scripts executable
 RUN chmod +x /scripts/*.sh && chmod +x /entrypoint.sh
 
-# Fix Composer permissions and run install
 RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
-
-# Run the deploy script (migrations, etc.)
 RUN /scripts/00-laravel-deploy.sh
 
-# Environment Variables
 ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
 ENV RUN_SCRIPTS 1
 ENV APP_ENV production
 ENV APP_DEBUG false
 
-# Use our custom entrypoint to fix permissions at runtime
-ENTRYPOINT ["/entrypoint.sh"]
+# Override the base image's CMD with our entrypoint
+ENTRYPOINT []
+CMD ["/entrypoint.sh"]

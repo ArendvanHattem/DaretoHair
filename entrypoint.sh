@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-# Set the correct user (usually www-data)
-USER_ID=33
-GROUP_ID=33
+echo ">>> Running entrypoint.sh..."
 
-echo "Fixing permissions for /var/www/html/storage and /var/www/html/bootstrap/cache..."
-chown -R $USER_ID:$GROUP_ID /var/www/html/storage /var/www/html/bootstrap/cache
+# Fix permissions for storage and bootstrap cache
+echo ">>> Fixing storage permissions..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-echo "Starting Supervisor..."
+# Create laravel.log if it doesn't exist
+touch /var/www/html/storage/logs/laravel.log
+chown www-data:www-data /var/www/html/storage/logs/laravel.log
+
+echo ">>> Starting Supervisor..."
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf
