@@ -1,7 +1,7 @@
 FROM php:8.4-fpm-alpine
 
-# Install nginx and required PHP extensions
-RUN apk add --no-cache nginx supervisor curl zip unzip git \
+# Install nginx, supervisor, required PHP extensions, and oniguruma dependency
+RUN apk add --no-cache nginx supervisor curl zip unzip git oniguruma-dev \
     && docker-php-ext-install pdo_mysql mbstring session tokenizer
 
 # Copy composer
