@@ -15,6 +15,7 @@ ENV WEBROOT /var/www/html/public
 ENV RUN_SCRIPTS 1
 ENV APP_ENV production
 ENV APP_DEBUG false
+ENV TMPDIR=/tmp/php
 
 # Override the base image's CMD with our entrypoint
 ENTRYPOINT []
