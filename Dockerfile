@@ -3,6 +3,7 @@ FROM tangramor/nginx-php8-fpm:php8.4.5_node23.11.0
 COPY . /var/www/html
 COPY scripts/* /scripts/
 COPY entrypoint.sh /entrypoint.sh
+COPY conf/nginx-site.conf /etc/nginx/conf.d/default.conf
 
 # Make scripts executable
 RUN chmod +x /scripts/*.sh && chmod +x /entrypoint.sh
