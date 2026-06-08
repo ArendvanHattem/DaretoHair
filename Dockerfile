@@ -2,6 +2,11 @@ FROM tangramor/nginx-php8-fpm:php8.4.5_node23.11.0
 
 COPY . /var/www/html
 COPY scripts/* /scripts/
+
+# Fix permissions for Laravel storage and bootstrap cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 RUN chmod +x /scripts/*.sh
 
 # Environment variables
@@ -15,7 +20,7 @@ ENV APP_DEBUG false
 RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
 RUN /scripts/00-laravel-deploy.sh
 
-# Copy nginx config if needed (the image may have its own default)
+# Copy nginx config if needed
 COPY conf/nginx-site.conf /etc/nginx/conf.d/default.conf
 
 CMD ["/start.sh"]
