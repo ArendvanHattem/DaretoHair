@@ -1,7 +1,20 @@
 FROM richarvey/nginx-php-fpm:3.1.6
 
 COPY . .
-COPY scripts/* /scripts/
+
+# Install required PHP extensions
+RUN apk add --no-cache \
+    php82-pdo_mysql \
+    php82-pdo \
+    php82-mysqli \
+    php82-mbstring \
+    php82-zip \
+    php82-bcmath \
+    php82-curl \
+    php82-xml \
+    php82-json \
+    php82-tokenizer \
+    php82-fileinfo
 
 # Image config
 ENV SKIP_COMPOSER 0
@@ -14,5 +27,4 @@ ENV REAL_IP_HEADER 1
 ENV APP_ENV production
 ENV APP_DEBUG false
 
-RUN composer install --no-dev
 CMD ["/start.sh"]
