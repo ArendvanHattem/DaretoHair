@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\AccountgegevensController;
-use App\Http\Controllers\auth\LoginController;
-use App\Http\Controllers\auth\LogoutController;
-use App\Http\Controllers\auth\PasswordResetController;
-use App\Http\Controllers\auth\PasswordResetFormController;
-use App\Http\Controllers\auth\SignupController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\PasswordResetFormController;
+use App\Http\Controllers\Auth\SignupController;
 use App\Http\Controllers\ClientAgendaController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
