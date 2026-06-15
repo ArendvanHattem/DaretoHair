@@ -77,7 +77,7 @@
                         <select class="form-control" id="status" name="status" required>
                             <option value="in afwachting" {{ $appointment->status == 'in afwachting' ? 'selected' : '' }}>In afwachting</option>
                             <option value="bevestigd" {{ $appointment->status == 'bevestigd' ? 'selected' : '' }}>Bevestigd</option>
-                            <option value="geannuleerd" {{ $appointment->status == 'geannuleerd' ? 'selected' : '' }}>Geannuleeerd</option>
+                            <option value="geannuleerd" {{ $appointment->status == 'geannuleerd' ? 'selected' : '' }}>Geannuleerd</option>
                         </select>
                     </div>
                @else
