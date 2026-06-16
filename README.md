@@ -57,9 +57,13 @@ Standaard admin account
 
 Gebruik een van de volgende accounts om in te loggen:
 
+Voor een admin account:
+
 - Email: admin@test.nl
 - Wachtwoord: Password1
-  of
+
+Voor een klant account:
+
 - Email: client@test.nl
 - wachtwoord: Password1
 
