@@ -15,23 +15,23 @@ Zorg ervoor dat je het volgende hebt geïnstalleerd:
 
 ### Clone eerst het project:
 
-``` git clone <repository-url> ```
+`git clone <repository-url>`
 
 ### Ga daarna naar de projectmap:
 
-``` cd <projectnaam>``` 
+` cd <projectnaam>`
 
 ### Installeer alle dependencies:
 
-``` composer install``` 
+` composer install`
 
 ### Maak een .env bestand aan:
 
-```cp .env.example .env``` 
+`cp .env.example .env`
 
 ### Genereer de application key:
 
-```php artisan key:generate```
+`php artisan key:generate`
 
 ### Configureer vervolgens je databasegegevens in het .env bestand.
 
@@ -39,7 +39,7 @@ Database opzetten
 
 ### Om alles opnieuw correct op te zetten met de nieuwste rollen, seeders en testdata, raden we aan om het volgende commando te gebruiken:
 
-```php artisan migrate:fresh --seed```
+`php artisan migrate:fresh --seed`
 
 Dit verwijdert alle tabellen, maakt ze opnieuw aan en vult de database automatisch met testdata.
 
@@ -55,10 +55,13 @@ klanten
 Testaccounts
 Standaard admin account
 
-Gebruik het volgende account om in te loggen:
+Gebruik een van de volgende accounts om in te loggen:
 
 - Email: admin@test.nl
-- Wachtwoord: geheim123
+- Wachtwoord: Password1
+  of
+- Email: client@test.nl
+- wachtwoord: Password1
 
 ## Project starten
 
@@ -66,11 +69,12 @@ Wanneer je Laravel Herd gebruikt, zou het project automatisch beschikbaar moeten
 
 ## Start eventueel de development server handmatig met:
 
-```php artisan serve```
+`php artisan serve`
 
 #### Handige commando’s
+
 - Cache legen
-```php artisan optimize:clear```
+  `php artisan optimize:clear`
 
 - Migraties opnieuw uitvoeren met seeders
-```php artisan migrate:fresh --seed```
+  `php artisan migrate:fresh --seed`
