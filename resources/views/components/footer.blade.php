@@ -2,7 +2,7 @@
     <div class="footer-grid">
         <div class="footer-map">
             <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2460.4585085665567!2d5.4915812!3d51.9255898!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6565b2b08ab85%3A0xee147ad57f40b36e!2sBatouwse%20Singel%20109%2C%204033%20KS%20Lienden!5e0!3m2!1snl!2snl!4v1770713113894!5m2!1snl!2snl"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2462.603667812896!2d5.41089127589343!3d51.88644677190205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6f80f6618dde7%3A0x662721163d78605c!2sROC%20Rivor!5e0!3m2!1snl!2snl!4v1782125755488!5m2!1snl!2snl"
                 allowfullscreen
                 loading="lazy">
             </iframe>
